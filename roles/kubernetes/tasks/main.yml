@@ -149,7 +149,7 @@
 
 - name: "Run kube-apiserver container"
   shell: "docker run -d --pid host --restart always --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ kube-apiserver:1.0 \
-        --admission-control=NamespaceLifecycle,NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ResourceQuota \
+        --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
         --runtime-config=api/v1 --allow-privileged=true --insecure-bind-address={{ groups['k8s-master'][0] }} \
         --insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address={{ groups['k8s-master'][0] }} \
         --client-ca-file=/opt/k8s/cert/ca.crt --tls-private-key-file=/opt/k8s/cert/server.key \
