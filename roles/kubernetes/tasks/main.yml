@@ -21,7 +21,7 @@
 - name: "remove docker_gwbridge"
   shell: "docker network rm docker_gwbridge"
   ignore_errors: true
-  
+
 - name: "Stop etcd container"
   shell: "docker rm -f $(docker ps |grep etcd|awk '{print $1}')"
   ignore_errors: true
@@ -87,7 +87,7 @@
   copy:
     src: kubeconfig-kubelet
     dest: /etc/kubernetes/kubeconfig-kubelet
-  when: "'k8s-workers' in group_names"
+  when: "'k8s-node' in group_names"
 
 
 - name: "Create cert and key file (for kube-proxy and kubelet)"
