@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #kube-api-server
-docker run -d --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ kube-apiserver:1.0 \
+docker run --rm --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ kube-apiserver:1.0 \
 --admission-control=NamespaceLifecycle,NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ResourceQuota \
 --runtime-config=api/v1 --allow-privileged=true --insecure-bind-address=10.27.44.103 \
 --insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address=10.27.44.103 \

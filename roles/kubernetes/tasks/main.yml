@@ -32,7 +32,7 @@
   when: "'etcd-servers' in group_names"
 
 - name: create etcd cluster
-  shell: " docker run -d -v /data:/data -p 4001:4001 -p 2379:2379 etcd:1.1 --data-dir /data --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
+  shell: " docker run -d --restart always -v /data:/data -p 4001:4001 -p 2379:2379 etcd:1.1 --data-dir /data --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
   when: "'etcd-servers' in group_names"
 
 - name: "Install bin packages"
@@ -109,7 +109,7 @@
    state: restarted
    enabled: yes
    daemon_reload: yes
-   
+
 
 - name: "Set flanneld subnet"
   shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
@@ -132,3 +132,45 @@
 
 - name: "Load pause image"
   shell: "docker load -i /opt/k8s/pause.tar"
+
+
+
+- name: "Run kube-apiserver container"
+  shell: "docker run -d --restart always --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ kube-apiserver:1.0 \
+  --admission-control=NamespaceLifecycle,NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ResourceQuota \
+  --runtime-config=api/v1 --allow-privileged=true --insecure-bind-address={{ groups['k8s-master'][0] }} \
+  --insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address={{ groups['k8s-master'][0] }} \
+  --client-ca-file=/opt/k8s/cert/ca.crt --tls-private-key-file=/opt/k8s/cert/server.key \
+  --tls-cert-file=/opt/k8s/cert/server.crt --service-cluster-ip-range=10.200.0.0/16 \
+  --etcd-servers=http://{{ groups['etcd-servers'][0] }}:4001 --logtostderr=true --cors-allowed-origins='.*'"
+
+ when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+
+- name: "Run kube-scheduler container"
+  shell: "docker run -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes kube-scheduler:1.0 \
+  --master=https://{{ groups['k8s-master'][0] }}:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master"
+
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+
+- name: "Run kube-controller-manager container"
+  shell: "docker run -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s kube-controller-manager:1.0 \
+  --master={{ groups['k8s-master'][0] }}:8080 --master=https://{{ groups['k8s-master'][0] }}:6443 \
+  --service_account_private_key_file=/opt/k8s/server.key
+  --root-ca-file=/opt/k8s/cert/ca.crt --kubeconfig=/etc/kubernetes/kubeconfig-master \
+  --logtostderr=true"
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+- name: "Run kube-dns container"
+  shell: "docker run -d --restart always --net=host -v /opt/k8s/:/opt/k8s/ -v /etc/kubernetes:/etc/kubernetes kube-dns:1.0 \
+  --dns-port=53 --domain=cluster.local \
+  --kube-master-url=https://{{ groups['k8s-master'][0] }}:6443 \
+  --kubecfg-file=/etc/kubernetes/kubeconfig-master"
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+- name: "Run kube-proxy container"
+  shell: "docker run --privileged -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s  kube-proxy:1.0 \
+  --master=https://{{ groups['k8s-master'][0] }}:6443 --proxy-mode=iptables \
+  --logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
+  when: "'k8s-node' in group_names"
