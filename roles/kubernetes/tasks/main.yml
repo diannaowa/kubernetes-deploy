@@ -215,7 +215,7 @@
   become: yes
   when: "'k8s-node' in group_names"
 
-  - name: "Start kubelet service"
+- name: "Start kubelet service"
   systemd:
     name: kubelet
     state: restarted
