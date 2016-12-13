@@ -1,0 +1,9 @@
+
+- name: "Upload deployment files"
+  copy:
+    src: "yml/"
+    dest: "/tmp/k8s/yml/"
+
+- name: "Deployment kubernetes monitor system"
+  shell: "kubectl apply -f /tmp/k8s/{{item | regex_replace(role_path + '/files/', '')}}"
+  with_items: "{{ lookup('pipe', 'find {{role_path}}/files/yml/ -type f ').split('\n') }}"
