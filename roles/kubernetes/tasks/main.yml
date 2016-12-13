@@ -21,6 +21,9 @@
 - name: "remove docker_gwbridge"
   shell: "docker network rm docker_gwbridge"
   ignore_errors: true
+- name: "Stop etcd container"
+  shell: "docker rm -f $(docker ps |grep etcd|awk '{print $1}')"
+  when: "'etcd-servers' in group_names"
 
 - name: "Clean cluster data"
   file: path=/data state=absent
