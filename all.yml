@@ -1,0 +1,4 @@
+---
+
+- include: docker.yml
+- include: kubernetes.yml
