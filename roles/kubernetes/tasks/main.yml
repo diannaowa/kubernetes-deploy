@@ -195,30 +195,18 @@
   --logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
   when: "'k8s-node' in group_names"
 
-# - name: "Run kubelet container"
-#   shell: "docker run --rm --net=host --privileged  -v /var/run/docker.sock:/var/run/docker.sock -v /opt/k8s:/opt/k8s -v /etc/kubernetes:/etc/kubernetes kubelet:1.0 \
-#   --address=0.0.0.0 \
-#   --port=10250 \
-#   --api-servers=https://{{ groups["k8s-master"][0] }}:6443 \
-#   --allow-privileged=true \
-#   --logtostderr=true \
-#   --cadvisor-port=4194 \
-#   --cluster_dns={{ groups["k8s-master"][0] }} \
-#   --cluster_domain=cluster.local \
-#   --healthz-bind-address=0.0.0.0 \
-#   --healthz-port=10248 \
-#   --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
+- name: "Run flanneld container"
+  shell: "docker run -d --privileged -v /var/run/:/var/run/ -v /dev/net:/dev/net flannled:1.0 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
+  when: "'k8s-node' in group_names"
+# - name: "Install kubelet service"
+#   template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
+#   become: yes
 #   when: "'k8s-node' in group_names"
-
-- name: "Install kubelet service"
-  template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
-  become: yes
-  when: "'k8s-node' in group_names"
-
-  - name: "Start kubelet service"
-  systemd:
-    name: kubelet
-    state: restarted
-    enabled: yes
-    daemon_reload: yes
-  when: "'k8s-node' in group_names"
+#
+#   - name: "Start kubelet service"
+#   systemd:
+#     name: kubelet
+#     state: restarted
+#     enabled: yes
+#     daemon_reload: yes
+#   when: "'k8s-node' in group_names"
