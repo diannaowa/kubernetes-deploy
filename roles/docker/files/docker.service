@@ -1,0 +1,12 @@
+[Unit]
+Description=Docker Daemon
+After=network.target
+
+
+[Service]
+ExecStart=/usr/bin/dockerd -p /var/run/dockerd.pid --insecure-registry docker.wemeeting.huawei.com --bip=192.168.0.1/24
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
