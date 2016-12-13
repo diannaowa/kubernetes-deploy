@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: heapster
-        image: docker.wemeeting.huawei.com/kubernetes/heapster:v1.2.0
+        image: gcr.io/google_containers/heapster:v1.2.0
         imagePullPolicy: Always
         command:
         - /heapster
