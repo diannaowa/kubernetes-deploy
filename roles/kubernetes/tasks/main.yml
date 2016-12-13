@@ -196,7 +196,7 @@
   when: "'k8s-node' in group_names"
 
 - name: "Run flanneld container"
-  shell: "docker run -d --privileged -v /var/run/:/var/run/ -v /dev/net:/dev/net flannled:1.0 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
+  shell: "docker run -d --restart always --privileged -v /var/run/:/var/run/ -v /dev/net:/dev/net flannled:1.0 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
   when: "'k8s-node' in group_names"
 # - name: "Install kubelet service"
 #   template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
