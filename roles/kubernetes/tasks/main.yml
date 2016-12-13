@@ -1,0 +1,126 @@
+---
+
+- name: "Clean cert files"
+  file: path=/opt/k8s/cert state=absent
+
+- name: "Mkdir /opt/k8s"
+  file:
+   path: /opt/k8s/cert
+   state: directory
+
+- name: "Mkdir /etc/kubernetes"
+  file:
+    path: /etc/kubernetes
+    state: directory
+
+- name: "Mkdir /var/log/kubernetes"
+  file:
+    path: /var/log/kubernetes/nginx
+    state: directory
+
+- name: "remove docker_gwbridge"
+  shell: "docker network rm docker_gwbridge"
+  ignore_errors: true
+
+- name: "Clean cluster data"
+  file: path=/var/lib/etcd/ state=absent
+  when: "'etcd-servers' in group_names"
+
+- name: "Install bin packages"
+  unarchive: src={{ item }} dest=/usr/bin/
+  with_items: "{{ lookup('pipe', 'find {{role_path}}/files/kubernetes/ -type f').split('\n') }}"
+
+- name: "Create CA cert and key file"
+  args:
+   chdir: /opt/k8s/cert/
+  shell: "openssl genrsa -out ca.key 2048 && openssl req -x509 -new -nodes -key ca.key -subj '/CN=wemeeting.hauwei.com' -days 5000 -out ca.crt"
+  delegate_to: "{{groups['k8s-master'][0]}}"
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+- name: "Sync CA files to every node"
+  synchronize: src=/opt/k8s/cert/ dest=/opt/k8s/cert/
+  delegate_to: "{{groups['k8s-master'][0]}}"
+  when: "'k8s-workers' in group_names"
+
+- name: "Upload ssl config file"
+  template: src=master_ssl.conf.j2 dest=/opt/k8s/master_ssl.conf
+  become: yes
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+- name: "Create master cert and key file (for kube-apiserver)"
+  shell: "openssl genrsa -out server.key 2048 && \
+        openssl req -new -key server.key -subj '/CN={{groups['k8s-master'][0]}}' -config /opt/k8s/master_ssl.conf -out server.csr && \
+        openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 5000 -extensions v3_req -extfile /opt/k8s/master_ssl.conf -out server.crt"
+  args:
+   chdir: /opt/k8s/cert/
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+- name: "Create master cert and key file (for kube-controller-manager and kube-scheduler and kube-dns)"
+  shell: "openssl genrsa -out cs_client.key 2048 && \
+          openssl req -new -key cs_client.key -subj '/CN={{ansible_ssh_host}}' -out cs_client.csr && \
+          openssl x509 -req -in cs_client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out cs_client.crt -days 10000"
+  args:
+    chdir: /opt/k8s/cert/
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+- name: "Upload kubeconfig-master to master node"
+  copy:
+    src: kubeconfig-master
+    dest: /etc/kubernetes/kubeconfig-master
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+
+
+- name: "Create cert and key file (for kube-proxy and kubelet)"
+  shell: "openssl genrsa -out kubelet_client.key 2048 && \
+          openssl req -new -key kubelet_client.key -subj '/CN={{ansible_ssh_host}}' -out kubelet_client.csr && \
+          openssl x509 -req -in kubelet_client.csr -CA ca.crt -CAkey ca.key  -CAcreateserial -out kubelet_client.crt -days 5000"
+  args:
+    chdir: /opt/k8s/cert/
+  when: "'k8s-workers' in group_names"
+
+- name: "Upload kubeconfig-kubelet to every worker node"
+  copy:
+    src: kubeconfig-kubelet
+    dest: /etc/kubernetes/kubeconfig-kubelet
+  when: "'k8s-workers' in group_names"
+
+- name: "Install etcd service"
+  template: src=etcd.service.j2 dest=/etc/systemd/system/etcd.service
+  become: yes
+  when: "'etcd-servers' in group_names"
+
+- name: "Start etcd service"
+  systemd:
+    name: etcd
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  when: "'etcd-servers' in group_names"
+
+- name: "Set subnet"
+  shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
+
+
+- name: "Set flanneld subnet"
+  shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
+
+- name: "Reinstall docker service"
+  template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
+  become: yes
+
+- name: "Restart docker daemon"
+  systemd:
+    name: docker
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: "Upload pause image"
+  copy:
+    src: pause.tar
+    dest: /opt/k8s/pause.tar
+
+- name: "Load pause image"
+  shell: "docker load -i /opt/k8s/pause.tar"
