@@ -31,7 +31,6 @@
   file: path=/data state=absent
   when: "'etcd-servers' in group_names"
 
-
 - name: etcd data
   file: path=/data state=directory
   when: "'etcd-servers' in group_names"
@@ -120,7 +119,7 @@
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 - name: "Run flanneld container"
-  shell: "docker run -d --restart always --privileged -v /var/run/:/var/run/ -v /dev/net:/dev/net flannled:1.0 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
+  shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net flannled:1.0 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
   when: "'k8s-node' in group_names"
 
 
