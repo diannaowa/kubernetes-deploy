@@ -25,7 +25,7 @@
 - name: "Clean cluster data"
   file: path=/var/lib/etcd/ state=absent
   when: "'etcd-servers' in group_names"
-# 
+#
 # - name: "Install bin packages"
 #   unarchive: src={{ item }} dest=/usr/bin/
 #   with_items: "{{ lookup('pipe', 'find {{role_path}}/files/kubernetes/ -type f').split('\n') }}"
@@ -85,18 +85,6 @@
     dest: /etc/kubernetes/kubeconfig-kubelet
   when: "'k8s-workers' in group_names"
 
-- name: "Install etcd service"
-  template: src=etcd.service.j2 dest=/etc/systemd/system/etcd.service
-  become: yes
-  when: "'etcd-servers' in group_names"
-
-- name: "Start etcd service"
-  systemd:
-    name: etcd
-    state: restarted
-    enabled: yes
-    daemon_reload: yes
-  when: "'etcd-servers' in group_names"
 
 - name: "Set subnet"
   shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
