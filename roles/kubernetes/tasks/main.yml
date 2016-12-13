@@ -168,7 +168,7 @@
 
 
 - name: "Run kube-scheduler container"
-  shell: "docker run -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes kube-scheduler:1.0 \
+  shell: "docker run -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s kube-scheduler:1.0 \
       --master=https://{{ groups['k8s-master'][0] }}:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master"
 
   when: "ansible_ssh_host == groups['k8s-master'][0]"

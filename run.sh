@@ -17,16 +17,16 @@ docker run -d --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s
 --logtostderr=true
 
 #kube-scheduler
-docker run -d --net=host -v /etc/kubernetes:/etc/kubernetes kube-scheduler:1.0 \
+docker run -d --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s kube-scheduler:1.0 \
 --master=https://10.27.44.103:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master
 
 #kube-proxy
-docker run --privileged -d --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s  kube-proxy:1.2 \
+docker run --privileged --rm --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s  kube-proxy:1.0 \
 --master=https://10.27.44.103:6443 --proxy-mode=iptables \
 --logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet
 
 #run kube-dns
-docker run -d --net=host -v /opt/k8s/:/opt/k8s/ -v /etc/kubernetes:/etc/kubernetes kube-dns:1.0 \
+docker run --rm --net=host -v /opt/k8s/:/opt/k8s/ -v /etc/kubernetes:/etc/kubernetes kube-dns:1.0 \
 --dns-port=53 --domain=cluster.local \
 --kube-master-url=https://10.27.44.103:6443 \
 --kubecfg-file=/etc/kubernetes/kubeconfig-master
