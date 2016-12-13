@@ -12,7 +12,7 @@
 - name: Unarchive docker binary to /opt
   unarchive: src=docker-1.12.3.tgz dest=/opt
   become: yes
-  
+
 - name: Move to /usr/bin
   shell: "mv /opt/docker/* /usr/bin/"
   become: yes
