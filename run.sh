@@ -31,6 +31,18 @@ docker run --rm --net=host -v /opt/k8s/:/opt/k8s/ -v /etc/kubernetes:/etc/kubern
 --kube-master-url=https://10.27.44.103:6443 \
 --kubecfg-file=/etc/kubernetes/kubeconfig-master
 
+#kubelet
 
-
+docker run --rm --net=host --privileged  -v /var/run/docker.sock:/var/run/docker.sock -v /opt/k8s:/opt/k8s -v /etc/kubernetes:/etc/kubernetes kubelet:1.0 \
+--address=0.0.0.0 \
+--port=10250 \
+--api-servers=https://10.27.44.103:6443 \
+--allow-privileged=true \
+--logtostderr=true \
+--cadvisor-port=4194 \
+--cluster_dns={{ groups["k8s-master"][0] }} \
+--cluster_domain=cluster.local \
+--healthz-bind-address=0.0.0.0 \
+--healthz-port=10248 \
+--kubeconfig=/etc/kubernetes/kubeconfig-kubelet
 # kubelet run in systemd
