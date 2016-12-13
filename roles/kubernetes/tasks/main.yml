@@ -197,6 +197,6 @@
   systemd:
     name: kubelet
     state: restarted
-    enabled: yes
+    #enabled: yes
     daemon_reload: yes
   when: "'k8s-node' in group_names"
