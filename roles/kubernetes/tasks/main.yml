@@ -32,7 +32,7 @@
   when: "'etcd-servers' in group_names"
 
 - name: create etcd cluster
-  shell: " docker run -d -p 4001:4001 -p 2379:2379 etcd:1.1 --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
+  shell: " docker run -d -v /data:/data -p 4001:4001 -p 2379:2379 etcd:1.1 --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
   when: "'etcd-servers' in group_names"
 
 - name: "Install bin packages"
