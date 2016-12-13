@@ -15,7 +15,7 @@
 
 - name: "Mkdir /var/log/kubernetes"
   file:
-    path: /var/log/kubernetes/nginx
+    path: /var/log/kubernetes/
     state: directory
 
 - name: "remove docker_gwbridge"
