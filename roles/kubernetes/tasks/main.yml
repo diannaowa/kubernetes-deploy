@@ -78,6 +78,11 @@
     dest: /etc/kubernetes/kubeconfig-master
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
+- name: "Upload kubeconfig-kubelet to every worker node"
+  copy:
+    src: kubeconfig-kubelet
+    dest: /etc/kubernetes/kubeconfig-kubelet
+  when: "'k8s-workers' in group_names"
 
 
 - name: "Create cert and key file (for kube-proxy and kubelet)"
