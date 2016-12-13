@@ -99,10 +99,6 @@
   shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
-
-- name: "Set flanneld subnet"
-  shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
-
 - name: "Install flanneld service"
   template: src=flanneld.service.j2 dest=/etc/systemd/system/flanneld.service
   become: yes
@@ -113,6 +109,10 @@
    state: restarted
    enabled: yes
    daemon_reload: yes
+   
+
+- name: "Set flanneld subnet"
+  shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
 
 - name: "Reinstall docker service"
   template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
