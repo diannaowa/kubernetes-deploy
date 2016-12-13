@@ -199,3 +199,4 @@
     state: restarted
     enabled: yes
     daemon_reload: yes
+  when: "'k8s-node' in group_names"
