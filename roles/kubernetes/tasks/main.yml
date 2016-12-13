@@ -83,6 +83,16 @@
     dest: /etc/kubernetes/kubeconfig-master
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
+
+- name: "Create cert and key file (for kube-proxy and kubelet)"
+  shell: "openssl genrsa -out kubelet_client.key 2048 && \
+          openssl req -new -key kubelet_client.key -subj '/CN={{ansible_ssh_host}}' -out kubelet_client.csr && \
+          openssl x509 -req -in kubelet_client.csr -CA ca.crt -CAkey ca.key  -CAcreateserial -out kubelet_client.crt -days 5000"
+  args:
+    chdir: /opt/k8s/cert/
+  when: "'k8s-node' in group_names"
+
+
 - name: "Upload kubeconfig-kubelet to every worker node"
   copy:
     src: kubeconfig-kubelet
