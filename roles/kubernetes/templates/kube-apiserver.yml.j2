@@ -10,7 +10,6 @@ spec:
   containers:
     -
       command:
-       - /usr/bin/kube-apiserver
        - " --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
 --runtime-config=api/v1 --allow-privileged=true --etcd-servers=http://{{ groups['etcd-servers'][0] }}:4001 --insecure-bind-address={{ groups['k8s-master'][0] }} --insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address={{ groups['k8s-master'][0] }} \
 --client-ca-file=/opt/k8s/cert/ca.crt --tls-private-key-file=/opt/k8s/cert/server.key \
@@ -19,7 +18,7 @@ spec:
 --logtostderr=true --cors-allowed-origins='.*'"
 
 
-      image: "kube-apiserver:3.0"
+      image: "kube-apiserver:4.0"
       imagePullPolicy: IfNotPresent
       name: kube-apiserver
       initialDelaySeconds: 15
