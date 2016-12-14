@@ -4,7 +4,7 @@ metadata:
   name: heapster
   namespace: kube-system
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: heapster
-        image: gcr.io/google_containers/heapster:v1.2.0
+        image: kubernetes/heapster:canary
         imagePullPolicy: Always
         command:
         - /heapster
