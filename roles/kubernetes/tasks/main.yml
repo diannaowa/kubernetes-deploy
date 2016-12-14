@@ -117,9 +117,21 @@
   template: src=kube-apiserver.yml.j2 dest=/etc/kubernetes/manifests/kube-apiserver.yml
   when: "'k8s-master' in group_names"
 
-  - name: "Run kube-controller-manager static pod"
-    template: src=kube-controller-manager.yml.j2 dest=/etc/kubernetes/manifests/kube-controller-manager.yml
-    when: "'k8s-master' in group_names"
+- name: "Run kube-controller-manager static pod"
+  template: src=kube-controller-manager.yml.j2 dest=/etc/kubernetes/manifests/kube-controller-manager.yml
+  when: "'k8s-master' in group_names"
+
+- name: "Run kube-scheduler static pod"
+  template: src=kube-scheduler.yml.j2 dest=/etc/kubernetes/manifests/kube-scheduler.yml
+  when: "'k8s-master' in group_names"
+
+- name: "Run kube-dns static pod"
+  template: src=kube-dns.yml.j2 dest=/etc/kubernetes/manifests/kube-dns.yml
+  when: "'k8s-master' in group_names"
+
+- name: "Run kube-proxy static pod"
+  template: src=kube-proxy.yml.j2 dest=/etc/kubernetes/manifests/kube-proxy.yml
+  when: "'k8s-node' in group_names"
 
 
 # - name: "Set subnet"
