@@ -11,5 +11,5 @@
 
 - name: "Run etcd container"
   shell: "docker-compose up -d"
-    args:
-      chdir: /opt/etcd
+  args:
+   chdir: /opt/etcd
