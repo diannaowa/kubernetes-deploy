@@ -127,12 +127,12 @@
   shell: "kill -9 $(cat /var/run/dockerd.pid)"
   become: yes
   ignore_errors: true
-  when: "{{ ansible_os_family|lower }}==ubuntu"
+  when: "{{ ansible_os_family|lower }}==debian"
 
 - name: "Reinstall docker service"
   shell: "source /var/run/flannel/subnet.env && nohup dockerd -p /var/run/dockerd.pid --insecure-registry go-nexus -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} >> /var/log/docker.log & "
   become: yes
-  when: "{{ ansible_os_family|lower }}==ubuntu"
+  when: "{{ ansible_os_family|lower }}==debian"
 
 - name: "Upload pause image"
   copy:
