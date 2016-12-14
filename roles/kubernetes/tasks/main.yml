@@ -113,6 +113,11 @@
   when: "'k8s-master' in group_names"
 
 
+- name: "Run kube-apiserver static pod"
+  template: src=kube-apiserver.yml.j2 dest=/etc/kubernetes/manifests/kube-apiserver.yml
+  when: "'k8s-master' in group_names"
+
+
 # - name: "Set subnet"
 #   shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
 #   when: "ansible_ssh_host == groups['k8s-master'][0]"
