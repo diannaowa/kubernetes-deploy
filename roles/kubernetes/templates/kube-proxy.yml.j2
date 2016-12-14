@@ -11,7 +11,7 @@ spec:
     -
       command:
         - /usr/bin/run.sh
-        - "--master=https://127.0.0.1:6443 --proxy-mode=iptables"
+        - "--master=https://{{ ansible_ssh_host}}:6443 --proxy-mode=iptables"
         - "--logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
 
       image: "kube-proxy:5.0"

@@ -15,7 +15,7 @@ spec:
         - "--service_account_private_key_file=/opt/k8s/cert/server.key"
         - "--root-ca-file=/opt/k8s/cert/ca.crt --kubeconfig=/etc/kubernetes/kubeconfig-master"
         - "--logtostderr=true"
-        -
+        
       image: "kube-controller-manager:5.0"
       imagePullPolicy: IfNotPresent
 
