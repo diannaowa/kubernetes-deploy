@@ -96,6 +96,22 @@
     dest: /etc/kubernetes/kubeconfig-kubelet
   when: "'k8s-workers' in group_names"
 
+- name: "Make sure /etc/kubernetes/manifests"
+  file: path=/etc/kubernetes/manifests state=directory
+
+- name: "Install kubelet service"
+  template: src=kubelet.master.service.j2 dest=/etc/systemd/system/kubelet.service
+  become: yes
+  when: "'k8s-master' in group_names"
+
+- name: "Start kubelet service"
+  systemd:
+    name: kubelet
+    state: restarted
+    #enabled: yes
+    daemon_reload: yes
+  when: "'k8s-master' in group_names"
+
 
 - name: "Set subnet"
   shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
@@ -171,15 +187,15 @@
   --logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
   when: "'k8s-node' in group_names"
 
-- name: "Install kubelet service"
-  template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
-  become: yes
-  when: "'k8s-node' in group_names"
+  - name: "Install kubelet service"
+    template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
+    become: yes
+    when: "'k8s-node' in group_names"
 
-- name: "Start kubelet service"
-  systemd:
-    name: kubelet
-    state: restarted
-    #enabled: yes
-    daemon_reload: yes
-  when: "'k8s-node' in group_names"
+  - name: "Start kubelet service"
+    systemd:
+      name: kubelet
+      state: restarted
+      #enabled: yes
+      daemon_reload: yes
+    when: "'k8s-node' in group_names"

@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver
+  namespace: kube-system
+  labels:
+    k8s-app: kube-apiserver
+spec:
+  containers:
+    -
+      command:
+       - "--admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
+       - "--runtime-config=api/v1 --allow-privileged=true --insecure-bind-address={{ ansible_ssh_host }}"
+       - "--insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address={{ ansible_ssh_host }}"
+       - "--client-ca-file=/opt/k8s/cert/ca.crt --tls-private-key-file=/opt/k8s/cert/server.key"
+       - "--service-account-key-file=/opt/k8s/cert/server.key"
+       - "--tls-cert-file=/opt/k8s/cert/server.crt --service-cluster-ip-range=10.200.0.0/16"
+       - "--etcd-servers=http://127.0.0.1:4001 --logtostderr=true --cors-allowed-origins='.*'"
+
+      image: "duizhang/kube-apiserver:1.4.7"
+      imagePullPolicy: IfNotPresent
+      name: kube-apiserver
+      livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 8080
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+      ports:
+        -
+          containerPort: 6443
+          hostPort: 6443
+          name: https
+        -
+          containerPort: 8080
+          hostPort: 8080
+          name: http
+
+      volumeMounts:
+        -
+          mountPath: /opt/k8s
+          name: sslcert
+          readOnly: true
+
+  hostNetwork: true
+  volumes:
+    -
+      hostPath:
+        path: /opt/k8s
+      name: sslcert
