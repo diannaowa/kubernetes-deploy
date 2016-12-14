@@ -108,6 +108,7 @@
 
 - name: "Set flanneld subnet"
   shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
+  ignore_errors: true
 
 - name: "Reinstall docker service"
   template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
