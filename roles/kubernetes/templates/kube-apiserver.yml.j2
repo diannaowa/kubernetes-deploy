@@ -21,12 +21,6 @@ spec:
       image: "duizhang/kube-apiserver:1.4.7"
       imagePullPolicy: IfNotPresent
       name: kube-apiserver
-      livenessProbe:
-      httpGet:
-        host: 127.0.0.1
-        path: /healthz
-        port: 8080
-        scheme: HTTP
       initialDelaySeconds: 15
       timeoutSeconds: 15
       ports:
