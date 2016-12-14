@@ -1,6 +1,6 @@
 
 - name: Deploy kubernetes
   hosts: all
-  gather_facts: no
+  gather_facts: yes
   roles:
     - kubernetes
