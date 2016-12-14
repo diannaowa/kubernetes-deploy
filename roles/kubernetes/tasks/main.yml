@@ -102,7 +102,7 @@
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 - name: "Run flanneld container"
-  shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net duizhang/flannled:v0.6.2 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
+  shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net duizhang/flanneld:v0.6.2 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
   when: "'k8s-node' in group_names"
 
 
