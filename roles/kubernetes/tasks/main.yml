@@ -22,10 +22,10 @@
   shell: "docker network rm docker_gwbridge"
   ignore_errors: true
 
-- name: "Stop etcd container"
-  shell: "docker rm -f $(docker ps |grep etcd|awk '{print $1}')"
-  ignore_errors: true
-  when: "'etcd-servers' in group_names"
+# - name: "Stop etcd container"
+#   shell: "docker rm -f $(docker ps |grep etcd|awk '{print $1}')"
+#   ignore_errors: true
+#   when: "'etcd-servers' in group_names"
 
 # - name: "Clean cluster data"
 #   file: path=/data state=absent
@@ -53,7 +53,7 @@
 - name: "Sync CA files to every node"
   synchronize: src=/opt/k8s/cert/ dest=/opt/k8s/cert/
   delegate_to: "{{groups['k8s-master'][0]}}"
-  when: "'k8s-workers' in group_names"
+  when: "'k8s-node' in group_names"
 
 - name: "Upload ssl config file"
   template: src=master_ssl.conf.j2 dest=/opt/k8s/master_ssl.conf
@@ -129,6 +129,7 @@
 - name: "Reinstall docker service"
   template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
   become: yes
+  when: "{{ ansible_os_family|lower }}==centos"
 
 - name: "Restart docker daemon"
   systemd:
@@ -136,6 +137,18 @@
     state: restarted
     enabled: yes
     daemon_reload: yes
+  when: "{{ ansible_os_family|lower }}==centos"
+
+- name: "kill docker"
+  shell: "kill -9 $(cat /var/run/dockerd.pid)"
+  become: yes
+  ignore_errors: true
+  when: "{{ ansible_os_family|lower }}==ubuntu"
+
+- name: "Reinstall docker service"
+  shell: "source /var/run/flannel/subnet.env && nohup dockerd -p /var/run/dockerd.pid --insecure-registry go-nexus -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} >> /var/log/docker.log & "
+  become: yes
+  when: "{{ ansible_os_family|lower }}==ubuntu"
 
 - name: "Upload pause image"
   copy:
@@ -144,8 +157,6 @@
 
 - name: "Load pause image"
   shell: "docker load -i /opt/k8s/pause.tar"
-
-
 
 - name: "Run kube-apiserver container"
   shell: "docker run -d --pid host --restart always --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ duizhang/kube-apiserver:1.4.7 \
