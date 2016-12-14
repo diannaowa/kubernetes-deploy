@@ -27,17 +27,17 @@
   ignore_errors: true
   when: "'etcd-servers' in group_names"
 
-- name: "Clean cluster data"
-  file: path=/data state=absent
-  when: "'etcd-servers' in group_names"
+# - name: "Clean cluster data"
+#   file: path=/data state=absent
+#   when: "'etcd-servers' in group_names"
 
-- name: etcd data
-  file: path=/data state=directory
-  when: "'etcd-servers' in group_names"
+# - name: etcd data
+#   file: path=/data state=directory
+#   when: "'etcd-servers' in group_names"
 
-- name: create etcd cluster
-  shell: " docker run -d --restart always -v /data:/data -p 4001:4001 -p 2379:2379 etcd:1.1 --data-dir /data --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
-  when: "'etcd-servers' in group_names"
+# - name: create etcd cluster
+#   shell: " docker run -d --restart always -v /data:/data -p 4001:4001 -p 2379:2379 etcd:1.1 --data-dir /data --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
+#   when: "'etcd-servers' in group_names"
 
 - name: "Install bin packages"
   unarchive: src={{ item }} dest=/usr/bin/
@@ -148,7 +148,7 @@
 
 
 - name: "Run kube-apiserver container"
-  shell: "docker run -d --pid host --restart always --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ kube-apiserver:1.0 \
+  shell: "docker run -d --pid host --restart always --net=host -v /opt/k8s/cert/:/opt/k8s/cert/ duizhang/kube-apiserver:1.4.7 \
         --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
         --runtime-config=api/v1 --allow-privileged=true --insecure-bind-address={{ groups['k8s-master'][0] }} \
         --insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address={{ groups['k8s-master'][0] }} \
@@ -161,14 +161,14 @@
 
 
 - name: "Run kube-scheduler container"
-  shell: "docker run -d --pid host --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s kube-scheduler:1.0 \
+  shell: "docker run -d --pid host --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s duizhang/kube-scheduler:1.4.7 \
       --master=https://{{ groups['k8s-master'][0] }}:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master"
 
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 
 - name: "Run kube-controller-manager container"
-  shell: "docker run -d --pid host --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s kube-controller-manager:1.0 \
+  shell: "docker run -d --pid host --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s duizhang/kube-controller-manager:1.4.7 \
         --master={{ groups['k8s-master'][0] }}:8080 --master=https://{{ groups['k8s-master'][0] }}:6443 \
         --service_account_private_key_file=/opt/k8s/cert/server.key \
         --root-ca-file=/opt/k8s/cert/ca.crt --kubeconfig=/etc/kubernetes/kubeconfig-master \
@@ -176,14 +176,14 @@
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 - name: "Run kube-dns container"
-  shell: "docker run -d --pid host --restart always --net=host -v /opt/k8s/:/opt/k8s/ -v /etc/kubernetes:/etc/kubernetes kube-dns:1.0 \
+  shell: "docker run -d --pid host --restart always --net=host -v /opt/k8s/:/opt/k8s/ -v /etc/kubernetes:/etc/kubernetes duizhang/kube-dns:1.4.7 \
   --dns-port=53 --domain=cluster.local \
   --kube-master-url=https://{{ groups['k8s-master'][0] }}:6443 \
   --kubecfg-file=/etc/kubernetes/kubeconfig-master"
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 - name: "Run kube-proxy container"
-  shell: "docker run --privileged --pid host -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s  kube-proxy:1.0 \
+  shell: "docker run --privileged --pid host -d --restart always --net=host -v /etc/kubernetes:/etc/kubernetes -v /opt/k8s:/opt/k8s duizhang/kube-proxy:1.4.7 \
   --master=https://{{ groups['k8s-master'][0] }}:6443 --proxy-mode=iptables \
   --logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
   when: "'k8s-node' in group_names"

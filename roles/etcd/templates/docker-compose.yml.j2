@@ -1,0 +1,20 @@
+version: '2'
+services:
+  etcd:
+    image: 'duizhang/etcd:3.0.10-v'
+    restart: always
+    environment:
+      ETCD_ARGS: "-data-dir /data -name {{ ansible_hostname }} \
+         -advertise-client-urls http://{{ ansible_ssh_host }}:2379,http://{{ ansible_ssh_host }}:4001 \
+         -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 \
+         -initial-advertise-peer-urls http://{{ ansible_ssh_host }}:2380 \
+         -listen-peer-urls http://0.0.0.0:2380 \
+         -initial-cluster-token etcd-cluster-1 \
+         -initial-cluster {% for host in groups["etcd-servers"] %}{{ hostvars[host]['ansible_hostname'] }}=http://{{ host }}:2380,{% endfor %} \
+         -initial-cluster-state new"
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+      - "4001:4001"
+    volumes:
+      - "/data:/data:rw"
