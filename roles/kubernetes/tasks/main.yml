@@ -22,23 +22,6 @@
   shell: "docker network rm docker_gwbridge"
   ignore_errors: true
 
-# - name: "Stop etcd container"
-#   shell: "docker rm -f $(docker ps |grep etcd|awk '{print $1}')"
-#   ignore_errors: true
-#   when: "'etcd-servers' in group_names"
-
-# - name: "Clean cluster data"
-#   file: path=/data state=absent
-#   when: "'etcd-servers' in group_names"
-
-# - name: etcd data
-#   file: path=/data state=directory
-#   when: "'etcd-servers' in group_names"
-
-# - name: create etcd cluster
-#   shell: " docker run -d --restart always -v /data:/data -p 4001:4001 -p 2379:2379 etcd:1.1 --data-dir /data --listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 --advertise-client-urls http://0.0.0.0:2379"
-#   when: "'etcd-servers' in group_names"
-
 - name: "Install bin packages"
   unarchive: src={{ item }} dest=/usr/bin/
   with_items: "{{ lookup('pipe', 'find {{role_path}}/files/kubernetes/ -type f').split('\n') }}"
@@ -119,7 +102,7 @@
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 - name: "Run flanneld container"
-  shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net flannled:1.0 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
+  shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net duizhang/flannled:v0.6.2 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
   when: "'k8s-node' in group_names"
 
 
