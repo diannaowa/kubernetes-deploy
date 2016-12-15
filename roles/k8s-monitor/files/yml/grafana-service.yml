@@ -4,8 +4,8 @@ metadata:
   labels:
     # For use as a Cluster add-on (https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)
     # If you are NOT using this as an addon, you should comment out this line.
-    #kubernetes.io/cluster-service: 'true'
-    #kubernetes.io/name: monitoring-grafana
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/name: monitoring-grafana
   name: monitoring-grafana
   namespace: kube-system
 spec:
@@ -16,6 +16,5 @@ spec:
   ports:
   - port: 80
     targetPort: 3000
-    nodePort: 30000
   selector:
     k8s-app: grafana
