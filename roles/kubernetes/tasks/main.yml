@@ -133,10 +133,15 @@
   template: src=kube-proxy.yml.j2 dest=/etc/kubernetes/manifests/kube-proxy.yml
   when: "'k8s-node' in group_names"
 
+- name: "Set subnet"
+  shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
+  when: "ansible_ssh_host == groups['k8s-master'][0]"
 
-# - name: "Set subnet"
-#   shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
-#   when: "ansible_ssh_host == groups['k8s-master'][0]"
+- name: "Run flannel static pod"
+  template: src=flannel.yml.j2 dest=/etc/kubernetes/manifests/flannel.yml
+  when: "'k8s-node' in group_names"
+
+
 #
 # - name: "Run flanneld container"
 #   shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net duizhang/flanneld:v0.6.2 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
