@@ -11,7 +11,7 @@ spec:
     -
       command:
         - /usr/bin/run.sh
-        - "--master=https://{{ ansible_ssh_host }}:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master"
+        - "--master=https://{{ groups["k8s-master"][0] }}:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master"
 
       #image: "duizhang/kube-scheduler:1.4.7-run"
       image: "duizhang/kube-scheduler:1.5.1"

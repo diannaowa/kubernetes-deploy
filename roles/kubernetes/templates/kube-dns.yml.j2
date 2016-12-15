@@ -12,7 +12,7 @@ spec:
       command:
         - /usr/bin/run.sh
         - "--dns-port=53 --domain=cluster.local"
-        - "--kube-master-url=https://{{ ansible_ssh_host }}:6443"
+        - "--kube-master-url=https://{{ groups["k8s-master"][0] }}:6443"
         - "--kubecfg-file=/etc/kubernetes/kubeconfig-master"
 
       #image: "duizhang/kube-dns:1.4.7-run"

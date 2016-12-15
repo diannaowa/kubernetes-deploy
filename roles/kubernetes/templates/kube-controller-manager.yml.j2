@@ -11,7 +11,7 @@ spec:
     -
       command:
         - /usr/bin/run.sh
-        - "--master={{ ansible_ssh_host }}:8080 --master=https://{{ ansible_ssh_host }}:6443"
+        - "--master={{ groups["k8s-master"][0] }}:8080 --master=https://{{ groups["k8s-master"][0] }}:6443"
         - "--service_account_private_key_file=/opt/k8s/cert/server.key"
         - "--root-ca-file=/opt/k8s/cert/ca.crt --kubeconfig=/etc/kubernetes/kubeconfig-master"
         - "--logtostderr=true"
