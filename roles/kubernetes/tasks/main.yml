@@ -66,13 +66,13 @@
           openssl x509 -req -in kubelet_client.csr -CA ca.crt -CAkey ca.key  -CAcreateserial -out kubelet_client.crt -days 5000"
   args:
     chdir: /opt/k8s/cert/
-  when: "'k8s-workers' in group_names"
+  when: "'k8s-node' in group_names"
 
 - name: "Upload kubeconfig-kubelet to every worker node"
   copy:
     src: kubeconfig-kubelet
     dest: /etc/kubernetes/kubeconfig-kubelet
-  when: "'k8s-workers' in group_names"
+  when: "'k8s-node' in group_names"
 
 - name: "Make sure /etc/kubernetes/manifests"
   file: path=/etc/kubernetes/manifests state=directory
