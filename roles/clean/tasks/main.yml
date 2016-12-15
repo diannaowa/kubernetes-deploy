@@ -1,0 +1,32 @@
+---
+- name: "Clean cert files"
+  file: path=/opt/k8s/cert state=absent
+
+- name: "Mkdir /opt/k8s"
+  file:
+   path: /opt/k8s/cert
+   state: directory
+
+- name: "Mkdir /etc/kubernetes"
+  file:
+    path: /etc/kubernetes
+    state: directory
+
+- name: "Mkdir /var/log/kubernetes"
+  file:
+    path: /var/log/kubernetes/
+    state: directory
+
+- name: "remove docker_gwbridge"
+  shell: "docker network rm docker_gwbridge"
+  ignore_errors: true
+
+- name: "Stop kubelet service"
+  systemd:
+    name: kubelet
+    state: stopped
+    #enabled: yes
+    daemon_reload: yes
+
+- name: "Remove all container"
+  shell: "docker rm -f $(docker ps -a -q)"

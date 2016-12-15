@@ -1,6 +1,7 @@
 ---
 
 - include: docker.yml
+- include: clean.yml
 - include: etcd.yml
 - include: kubernetes.yml
 - include: k8s-monitor.yml

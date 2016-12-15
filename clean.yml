@@ -1,0 +1,6 @@
+
+- name: Clean all env
+  hosts: all
+  gather_facts: no
+  roles:
+    - clean
