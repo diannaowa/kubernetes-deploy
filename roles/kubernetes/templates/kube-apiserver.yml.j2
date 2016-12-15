@@ -12,7 +12,7 @@ spec:
       command:
        - /usr/bin/run.sh
        - " --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
-       - "--runtime-config=api/v1 --allow-privileged=true --etcd-servers=http://{{ ansible_ssh_host }}:4001"
+       - "--runtime-config=api/v1 --allow-privileged=true --etcd-servers={% for host in groups["etcd-servers"] %}http://{{ host }}:4001,{% endfor %}"
        - "--insecure-bind-address={{ ansible_ssh_host }}"
        - "--insecure-port=8080 --kubelet-https=true --secure-port=6443 --bind-address={{ ansible_ssh_host }}"
        - "--client-ca-file=/opt/k8s/cert/ca.crt --tls-private-key-file=/opt/k8s/cert/server.key"
