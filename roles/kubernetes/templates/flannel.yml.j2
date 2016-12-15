@@ -11,7 +11,7 @@ spec:
     -
       command:
         - /usr/bin/run.sh
-        - "-etcd-endpoints={% for host in groups["etcd-servers"] %}{{ hostvars[host]['ansible_hostname'] }}=http://{{ host }}:4001,{% endfor %}"
+        - "-etcd-endpoints={% for host in groups["etcd-servers"] %}http://{{ host }}:4001,{% endfor %}"
 
       image: "flannel:5.0"
 
