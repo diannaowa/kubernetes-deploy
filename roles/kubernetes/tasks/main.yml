@@ -129,6 +129,19 @@
   template: src=kube-dns.yml.j2 dest=/etc/kubernetes/manifests/kube-dns.yml
   when: "'k8s-master' in group_names"
 
+- name: "Install kubelet service"
+  template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
+  become: yes
+  when: "'k8s-node' in group_names"
+
+- name: "Start kubelet service"
+  systemd:
+    name: kubelet
+    state: restarted
+    #enabled: yes
+    daemon_reload: yes
+  when: "'k8s-node' in group_names"
+
 - name: "Run kube-proxy static pod"
   template: src=kube-proxy.yml.j2 dest=/etc/kubernetes/manifests/kube-proxy.yml
   when: "'k8s-node' in group_names"
