@@ -21,6 +21,9 @@
   copy: src=docker.service dest=/etc/systemd/system/docker.service owner=root group=root mode=0644
   become: yes
 
+- name: "Install docker-compose"
+  unarchive: src=docker-compose.tar.gz dest=/usr/bin/
+
 - name: Refresh docker service
   systemd:
     name: docker

@@ -14,7 +14,7 @@ spec:
         - "--master=https://{{ ansible_ssh_host }}:6443 --kubeconfig=/etc/kubernetes/kubeconfig-master"
 
       #image: "duizhang/kube-scheduler:1.4.7-run"
-      image: "kube-scheduler:1.5.1-test"
+      image: "duizhang/kube-scheduler:1.5.1"
       name: kube-scheduler
       volumeMounts:
         -

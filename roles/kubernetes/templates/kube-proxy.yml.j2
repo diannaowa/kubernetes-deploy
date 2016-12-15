@@ -15,7 +15,7 @@ spec:
         - "--logtostderr=true --kubeconfig=/etc/kubernetes/kubeconfig-kubelet"
 
       #image: "duizhang/kube-proxy:1.4.7-run"
-      image: "kube-proxy:1.5.1-test"
+      image: "duizhang/kube-proxy:1.5.1"
       name: kube-proxy
       securityContext:
         privileged: true
