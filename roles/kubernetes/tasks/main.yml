@@ -12,7 +12,7 @@
   args:
    chdir: /opt/k8s/cert/
   shell: "openssl genrsa -out ca.key 2048 && openssl req -x509 -new -nodes -key ca.key -subj '/CN=gocd2.com' -days 5000 -out ca.crt"
-  delegate_to: "{{groups['k8s-master'][0]}}"
+  #delegate_to: "{{groups['k8s-master'][0]}}"
   become: yes
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
