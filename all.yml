@@ -3,3 +3,4 @@
 - include: docker.yml
 - include: etcd.yml
 - include: kubernetes.yml
+- include: k8s-monitor.yml
