@@ -30,6 +30,7 @@
 
 - name: "Remove all container"
   shell: "docker rm -f $(docker ps -a -q)"
+  ignore_errors: yes
 
 - name: "x"
   shell: "rm -rf /data/*"
