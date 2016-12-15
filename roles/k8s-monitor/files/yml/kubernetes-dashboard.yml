@@ -73,9 +73,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: ui
-    port: 80
+  - port: 80
     targetPort: 9090
-    nodePort: 30003
   selector:
     app: kubernetes-dashboard
