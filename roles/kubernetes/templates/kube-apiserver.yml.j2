@@ -20,7 +20,8 @@ spec:
        - "--tls-cert-file=/opt/k8s/cert/server.crt --service-cluster-ip-range=10.200.0.0/16"
        - "--logtostderr=true --cors-allowed-origins='.*'"
 
-      image: "kube-apiserver:5.0"
+      #image: "duizhang/kube-apiserver:1.4.7-run"
+      image: "kube-apiserver:1.5.1-test"
       imagePullPolicy: IfNotPresent
       name: kube-apiserver
       initialDelaySeconds: 15

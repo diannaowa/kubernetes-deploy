@@ -13,7 +13,7 @@ spec:
         - /usr/bin/run.sh
         - "-etcd-endpoints={% for host in groups["etcd-servers"] %}http://{{ host }}:4001,{% endfor %}"
 
-      image: "flannel:5.0"
+      image: "duizhang/flannel:v0.6.0-run"
 
       name: kube-dns
       securityContext:
