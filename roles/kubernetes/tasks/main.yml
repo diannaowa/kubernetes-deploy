@@ -147,21 +147,23 @@
 #   shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net duizhang/flanneld:v0.6.2 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
 #   when: "'k8s-node' in group_names"
 #
+
+- name: "Set flanneld subnet"
+  shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
+  ignore_errors: true
 #
-# - name: "Set flanneld subnet"
-#   shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
-#   ignore_errors: true
-#
-# - name: "Reinstall docker service"
-#   template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
-#   become: yes
-#
-# - name: "Restart docker daemon"
-#   systemd:
-#     name: docker
-#     state: restarted
-#     enabled: yes
-#     daemon_reload: yes
+- name: "Reinstall docker service"
+  template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
+  become: yes
+  when: "'k8s-node' in group_names"
+
+- name: "Restart docker daemon"
+  systemd:
+    name: docker
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  when: "'k8s-node' in group_names"
 #
 #
 # - name: "Upload pause image"
