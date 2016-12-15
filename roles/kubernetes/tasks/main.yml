@@ -137,11 +137,16 @@
   shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
+
+- name: "Remove old flannel subnet.env"
+  file: path=/var/run/flannel/subnet.env state=absent
+
 - name: "Run flannel static pod"
   template: src=flannel.yml.j2 dest=/etc/kubernetes/manifests/flannel.yml
   when: "'k8s-node' in group_names"
 
-
+- name: "Wait for flanneld daemon"
+  wait_for: path=/var/run/flannel/subnet.env state=present
 #
 # - name: "Run flanneld container"
 #   shell: "docker run -d --restart always --privileged --net=host -v /var/run/:/var/run/ -v /dev/net:/dev/net duizhang/flanneld:v0.6.2 -etcd-endpoints=http://{{ groups['etcd-servers'][0] }}:4001"
@@ -151,6 +156,7 @@
 - name: "Set flanneld subnet"
   shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
   ignore_errors: true
+
 #
 - name: "Reinstall docker service"
   template: src=docker.service.j2 dest=/etc/systemd/system/docker.service
@@ -164,6 +170,7 @@
     enabled: yes
     daemon_reload: yes
   when: "'k8s-node' in group_names"
+
 #
 #
 # - name: "Upload pause image"
