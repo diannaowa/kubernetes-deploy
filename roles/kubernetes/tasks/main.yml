@@ -160,10 +160,12 @@
 
 - name: "Wait for flanneld daemon"
   wait_for: path=/var/run/flannel/subnet.env state=present
+  when: "'k8s-node' in group_names"
 
 - name: "Set flanneld subnet"
   shell: "iptables -t nat -F && ifconfig docker0 down &&  brctl delbr docker0"
   ignore_errors: true
+  when: "'k8s-node' in group_names"
 
 #
 - name: "Reinstall docker service"
