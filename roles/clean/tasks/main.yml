@@ -1,22 +1,4 @@
 ---
-- name: "Clean cert files"
-  file: path=/opt/k8s/cert state=absent
-
-- name: "Mkdir /opt/k8s"
-  file:
-   path: /opt/k8s/cert
-   state: directory
-
-- name: "Mkdir /etc/kubernetes"
-  file:
-    path: /etc/kubernetes
-    state: directory
-
-- name: "Mkdir /var/log/kubernetes"
-  file:
-    path: /var/log/kubernetes/
-    state: directory
-
 - name: "remove docker_gwbridge"
   shell: "docker network rm docker_gwbridge"
   ignore_errors: true
@@ -32,6 +14,7 @@
   shell: "docker rm -f $(docker ps -a -q)"
   ignore_errors: yes
 
-- name: "x"
+- name: "Remove all etcd data"
   shell: "rm -rf /data/*"
   ignore_errors: yes
+  when: "'etcd-servers' in group_names"
