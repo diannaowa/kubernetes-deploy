@@ -16,6 +16,7 @@ ExecStart=/usr/bin/kubelet \
         --cluster_domain=cluster.local \
         --healthz-bind-address=0.0.0.0 \
         --healthz-port=10248 \
+        --hostname-override={{ ansible_ssh_host }} \
         --kubeconfig=/etc/kubernetes/kubeconfig-kubelet
 Restart=always
 RestartSec=10
