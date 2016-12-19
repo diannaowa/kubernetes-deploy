@@ -330,6 +330,9 @@ def k8s_delete_rc(module,url,data):
 
     return item_changed, item_body
 
+def k8s_service_dependency(module,data):
+    pass
+
 
 def main():
     module = AnsibleModule(

@@ -1,5 +1,5 @@
 ---
-  
+
 - name: "Clean cert files"
   file: path=/opt/k8s/cert state=absent
 
@@ -142,7 +142,7 @@
   when: "'k8s-node' in group_names"
 
 - name: "Set subnet"
-  shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\"}'"
+  shell: "/usr/bin/etcdctl -C http://{{ groups['etcd-servers'][0] }}:4001 set /coreos.com/network/config '{\"Network\":\"192.168.0.0/16\",\"SubnetLen\":27}'"
   when: "ansible_ssh_host == groups['k8s-master'][0]"
 
 
