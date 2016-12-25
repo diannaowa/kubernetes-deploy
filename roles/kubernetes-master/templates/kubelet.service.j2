@@ -1,0 +1,22 @@
+i[Unit]
+Description=kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+#EnvironmentFile=/etc/network-environment
+ExecStart=/usr/bin/kubelet \
+        --address=0.0.0.0 \
+        --port=10250 \
+        --api-servers=https://{{ groups["k8s-master"][0] }}:6443 \
+        --allow-privileged=true \
+        --logtostderr=true \
+        --pod-manifest-path=/etc/kubernetes/manifests \
+        --cadvisor-port=4194 \
+        --cluster_dns={{ groups["k8s-master"][0] }} \
+        --cluster_domain=cluster.local \
+        --healthz-bind-address=0.0.0.0 \
+        --healthz-port=10248 \
+        --hostname-override={{ ansible_ssh_host }} \
+        --kubeconfig=/etc/kubernetes/kubeconfig-kubelet
+Restart=always
+RestartSec=10

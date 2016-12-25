@@ -1,0 +1,13 @@
+[Unit]
+Description=Docker Daemon
+After=network.target
+
+
+[Service]
+EnvironmentFile=/run/flannel/subnet.env
+ExecStart=/usr/bin/dockerd -p /var/run/dockerd.pid --insecure-registry go-nexus -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} -s overlay
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
