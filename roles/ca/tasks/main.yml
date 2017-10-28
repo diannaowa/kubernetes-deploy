@@ -1,4 +1,4 @@
---
+---
 
 - name: Download cfssl bin
   get_url:
