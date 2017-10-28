@@ -1,0 +1,33 @@
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+# User=etcd
+# set GOMAXPROCS to number of processors
+ExecStart=/usr/bin/etcd \
+  --name=etcd{{groups.etcd.index(inventory_hostname)+1 }} \
+  --cert-file=/etc/kubernetes/ssl/etcd.pem \
+  --key-file=/etc/kubernetes/ssl/etcd-key.pem \
+  --peer-cert-file=/etc/kubernetes/ssl/etcd.pem \
+  --peer-key-file=/etc/kubernetes/ssl/etcd-key.pem \
+  --trusted-ca-file=/etc/kubernetes/ssl/ca.pem \
+  --peer-trusted-ca-file=/etc/kubernetes/ssl/ca.pem \
+  --initial-advertise-peer-urls=https://{{ inventory_hostname }}:2380 \
+  --listen-peer-urls=https://{{ inventory_hostname }}:2380 \
+  --listen-client-urls=https://{{ inventory_hostname }}:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls=https://{{ inventory_hostname }}:2379 \
+  --initial-cluster-token=k8s-etcd-cluster \
+  --initial-cluster={% for host in groups["etcd"] %}etcd{{groups.etcd.index(inventory_hostname)+1 }}=http://{{ host }}:2380{% if loop.index != groups['etcd']|length %},{%endif%}{% endfor %} \
+  --initial-cluster-state=new \
+  --data-dir=/var/lib/etcd
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

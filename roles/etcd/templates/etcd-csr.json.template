@@ -3,6 +3,7 @@
   "hosts": [
     "127.0.0.1",
     {% for host in groups["etcd"] %}{{ host }}{% if loop.index != groups['etcd']|length %},{%endif%}
+    
     {% endfor %}
   ],
   "key": {
