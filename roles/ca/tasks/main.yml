@@ -17,7 +17,7 @@
 
 - name: "Upload config/csr files"
   copy:
-    src: {{ item }}
+    src: "{{ item }}"
     dest: /opt/ssl/{{ item }}
   with_items:
     - config.json
