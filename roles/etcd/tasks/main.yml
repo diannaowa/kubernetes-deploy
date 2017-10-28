@@ -1,0 +1,7 @@
+---
+
+- name: "Upload config/csr files"
+  template:
+    src: etcd-csr.json.template
+    dest: /opt/ssl/etcd-csr.json
+  when: "inventory_hostname == groups['masters'][0]"
