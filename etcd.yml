@@ -1,6 +1,0 @@
-
-- name: Deploy  docker
-  hosts: etcd-servers
-  gather_facts: yes
-  roles:
-    - etcd
