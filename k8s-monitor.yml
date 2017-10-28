@@ -1,5 +1,0 @@
-- name: Deploy monitoring&& Dashboard
-  hosts: k8s-master
-  gather_facts: yes
-  roles:
-    - k8s-monitor

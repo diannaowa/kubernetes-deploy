@@ -1,6 +1,0 @@
-
-- name: Deploy  docker
-  hosts: all
-  gather_facts: no
-  roles:
-    - docker
