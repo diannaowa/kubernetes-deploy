@@ -22,4 +22,4 @@
   with_items:
     - config.json
     - csr.json
-  when: "ansible_ssh_host == groups['masters'][0]"
+  when: "inventory_hostname == groups['masters'][0]"
