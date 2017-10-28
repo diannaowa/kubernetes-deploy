@@ -23,3 +23,10 @@
     - config.json
     - csr.json
   when: "inventory_hostname == groups['masters'][0]"
+
+- name: "Create CA"
+  shell: "cfssl gencert -initca csr.json | cfssljson -bare ca"
+  args:
+    chdir: /opt/ssl/
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "inventory_hostname == groups['masters'][0]"
