@@ -37,7 +37,7 @@
   shell: "wget -qO- {{ ETCD_URL }}| tar xvz -C /tmp/etcd-k8s"
 
 - name: "Install etcd bin"
-  shell: "find /tmp/etcd-k8s -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \;"
+  shell: "find /tmp/etcd-k8s -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \\;"
   with_items:
     - etcd
     - etcdctl
