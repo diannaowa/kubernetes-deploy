@@ -30,3 +30,13 @@
     chdir: /opt/ssl/
   delegate_to: "{{ groups['masters'][0] }}"
   when: "inventory_hostname == groups['masters'][0]"
+
+
+- name: "Create CA dirs on all nodes"
+  file: path=/etc/kubernetes/ssl/ state=directory
+
+- name: "Upload pem files"
+  copy:
+    src: "/opt/ssl/*.pem"
+    dest: /etc/kubernetes/ssl/
+  delegate_to: "{{ groups['masters'][0] }}"
