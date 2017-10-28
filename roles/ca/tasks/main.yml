@@ -1,0 +1,16 @@
+--
+
+- name: Download cfssl bin
+  get_url:
+    url: https://pkg.cfssl.org/R1.2/{{ item }}_linux-amd64
+    dest: /usr/bin/{{ item }}
+    mode: 0644
+  with_items:
+    - cfssl
+    - cfssljson
+    - cfssl-certinfo
+  delegate_to: {{ groups["masters"][0] }}
+
+- name: "Make sure /opt/ssl"
+  file: path=/opt/ssl state=directory
+  delegate_to: {{ groups["masters"][0] }}
