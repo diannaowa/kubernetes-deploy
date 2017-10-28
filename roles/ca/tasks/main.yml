@@ -4,13 +4,22 @@
   get_url:
     url: https://pkg.cfssl.org/R1.2/{{ item }}_linux-amd64
     dest: /usr/bin/{{ item }}
-    mode: 0644
+    mode: 0755
   with_items:
     - cfssl
     - cfssljson
     - cfssl-certinfo
-  delegate_to: {{ groups["masters"][0] }}
+  delegate_to: "{{ groups['masters'][0] }}"
 
 - name: "Make sure /opt/ssl"
   file: path=/opt/ssl state=directory
-  delegate_to: {{ groups["masters"][0] }}
+  delegate_to: "{{ groups['masters'][0] }}"
+
+- name: "Upload config/csr files"
+  copy:
+    src: {{ item }}
+    dest: /opt/ssl/{{ item }}
+  with_items:
+    - config.json
+    - csr.json
+  when: "ansible_ssh_host == groups['masters'][0]"
