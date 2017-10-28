@@ -36,7 +36,8 @@
   file: path=/etc/kubernetes/ssl/ state=directory
 
 - name: "Upload pem files"
-  copy:
-    src: "/opt/ssl/*.pem"
-    dest: /etc/kubernetes/ssl/
+  synchronize: src=/opt/ssl/{{ item }} dest=/etc/kubernetes/ssl/
+  with_items:
+    - ca.pem
+    - ca-key.pem
   delegate_to: "{{ groups['masters'][0] }}"
