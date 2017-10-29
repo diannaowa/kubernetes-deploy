@@ -1,3 +1,3 @@
 ---
 
-- include: kubernetes-server.yml
+- include_tasks: kubernetes-server.yml
