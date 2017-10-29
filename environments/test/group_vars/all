@@ -1,1 +1,3 @@
 ETCD_URL: https://github.com/coreos/etcd/releases/download/v3.2.9/etcd-v3.2.9-linux-amd64.tar.gz
+KUBERNETES_CLIENT_URL: https://dl.k8s.io/v1.8.2/kubernetes-client-linux-amd64.tar.gz
+KUBERNETES_SERVER_URL: https://dl.k8s.io/v1.8.2/kubernetes-server-linux-amd64.tar.gz

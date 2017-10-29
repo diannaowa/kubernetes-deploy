@@ -1,0 +1,14 @@
+---
+
+- name: "Make sure kubernetes-client tmp dir"
+  file: path=/tmp/kubernetes-client state=directory
+
+- name: "Download kubernetes client bin file"
+  shell: "wget -qO- {{ KUBERNETES_CLIENT_URL }}| tar xvz -C /tmp/kubernetes-client"
+
+
+- name: "Install kubernetes client bin"
+  shell: "find /tmp/kubernetes-client -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \\;"
+  with_items:
+    - kubectl
+    - kubefed

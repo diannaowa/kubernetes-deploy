@@ -3,7 +3,13 @@
 172.31.19.37
 172.31.19.39
 
+[kubernetes:children]
+masters
+nodes
+
 [masters]
 172.31.19.38
 172.31.19.37
 172.31.19.39
+
+[nodes]

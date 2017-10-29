@@ -1,9 +1,8 @@
 
-- name: Create CA
+- name: Deploy kubernetes Cluster
   hosts:
     - masters
     - nodes
-    - etcd
   gather_facts: no
   roles:
-    - ca
+    - kubernetes

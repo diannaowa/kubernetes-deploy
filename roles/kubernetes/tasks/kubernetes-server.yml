@@ -1,0 +1,24 @@
+---
+
+- name: "Make sure kubernetes-server tmp dir"
+  file: path=/tmp/kubernetes-server state=directory
+
+- name: "Download kubernetes server bin file"
+  shell: "wget -qO- {{ KUBERNETES_SERVER_URL }}| tar xvz -C /tmp/kubernetes-server"
+
+
+- name: "Install kubernetes master bin"
+  shell: "find /tmp/kubernetes-server -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \\;"
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - kubectl
+  when: "'masters' in group_names"
+
+- name: "Install kubernetes node bin"
+  shell: "find /tmp/kubernetes-server -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \\;"
+  with_items:
+    - kube-proxy
+    - kubelet
+  when: "'nodes' in group_names"
