@@ -25,11 +25,15 @@
   delegate_to: "{{ groups['masters'][0] }}"
   when: "'masters' in group_names"
 
+# - name: "Create bootstrap token.csv"
+#   shell: echo `head -c 16 /dev/urandom | od -An -t x | tr -d ' '`,kubelet-bootstrap,10001,\"system:kubelet-bootstrap\" > /opt/ssl/token.csv
+#   delegate_to: "{{ groups['masters'][0] }}"
+#   when: "inventory_hostname == groups['masters'][0]"
+
 - name: "Create bootstrap token.csv"
-  shell: echo `head -c 16 /dev/urandom | od -An -t x | tr -d ' '`,kubelet-bootstrap,10001,\"system:kubelet-bootstrap\" > /opt/ssl/token.csv
+  shell: echo {{TOKEN}},kubelet-bootstrap,10001,\"system:kubelet-bootstrap\" > /opt/ssl/token.csv
   delegate_to: "{{ groups['masters'][0] }}"
   when: "inventory_hostname == groups['masters'][0]"
-
 
 - name: "Upload token.csv file"
   synchronize: src=/opt/ssl/token.csv dest=/etc/kubernetes/
