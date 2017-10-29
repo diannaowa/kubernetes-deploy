@@ -38,7 +38,7 @@
 - name: "Upload kube-apiserver service file"
   template:
     src: kube-apiserver.service.template
-    dest: /etcd/systemd/system/kube-apiserver.service
+    dest: /etc/systemd/system/kube-apiserver.service
 
 - name: "Start kube-apiserver service"
   systemd:
