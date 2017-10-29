@@ -46,3 +46,29 @@
     daemon_reload: yes
     name: kube-apiserver
     enabled: yes
+
+
+- name: "Upload kube-controller-manager service file"
+  template:
+    src: kube-controller-manager.service.template
+    dest: /etc/systemd/system/kube-controller-manager.service
+
+- name: "Start kube-controller-manager service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kube-controller-manager
+    enabled: yes
+
+
+- name: "Upload kube-scheduler service file"
+  template:
+    src: kube-scheduler.service.template
+    dest: /etc/systemd/system/kube-scheduler.service
+
+- name: "Start kube-scheduler service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kube-scheduler
+    enabled: yes
