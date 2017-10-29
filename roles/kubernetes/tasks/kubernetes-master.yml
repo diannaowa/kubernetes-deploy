@@ -34,3 +34,15 @@
 - name: "Upload token.csv file"
   synchronize: src=/opt/ssl/token.csv dest=/etc/kubernetes/
   delegate_to: "{{ groups['masters'][0] }}"
+
+- name: "Upload kube-apiserver service file"
+  template:
+    src: kube-apiserver.service.template
+    dest: /etcd/systemd/system/kube-apiserver.service
+
+- name: "Start kube-apiserver service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kube-apiserver
+    enabled: yes
