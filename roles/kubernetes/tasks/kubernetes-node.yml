@@ -29,7 +29,7 @@
   shell: "kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=https://127.0.0.1:6443 \
+  --server=https://127.0.0.1:{{ PROXY_PORT }} \
   --kubeconfig=/opt/ssl/bootstrap.kubeconfig"
   delegate_to: "{{ groups['masters'][0] }}"
   when: "inventory_hostname == groups['masters'][0]"
@@ -66,7 +66,7 @@
   shell: "kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=https://127.0.0.1:6443 \
+  --server=https://127.0.0.1:{{ PROXY_PORT }} \
   --kubeconfig=/opt/ssl/kube-proxy.kubeconfig"
   delegate_to: "{{ groups['masters'][0] }}"
   when: "inventory_hostname == groups['masters'][0]"
@@ -99,4 +99,58 @@
 - name: "Upload kube-proxy.kubeconfigfile"
   synchronize: src=/opt/ssl/kube-proxy.kubeconfig dest=/etc/kubernetes/
   delegate_to: "{{ groups['masters'][0] }}"
+  when: "'nodes' in group_names"
+
+
+- name: "Create nginx conf dir"
+  file: path=/etc/nginx state=directory
+  when: "'nodes' in group_names"
+
+- name: "Upload nginx conf file"
+  template:
+    src: nginx.conf.template
+    dest: /etc/nginx/nginx.conf
+  when: "'nodes' in group_names"
+
+
+- name: "Install nginx service"
+  template:
+    src: nginx-proxy.service.template
+    dest: /etc/systemd/system/nginx-proxy.service
+  when: "'nodes' in group_names"
+
+- name: "Start nginx proxy service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: nginx-proxy
+    enabled: yes
+  when: "'nodes' in group_names"
+
+- name: "Install kubelet service"
+  template:
+    src: kubelet.service.template
+    dest: /etc/systemd/system/kubelet.service
+  when: "'nodes' in group_names"
+
+- name: "Install kube-proxy service"
+  template:
+    src: kube-proxy.service.template
+    dest: /etc/systemd/system/kube-proxy.service
+  when: "'nodes' in group_names"
+
+- name: "Start kubelet service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kubelet
+    enabled: yes
+  when: "'nodes' in group_names"
+
+- name: "Start kube-proxy service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kube-proxy
+    enabled: yes
   when: "'nodes' in group_names"

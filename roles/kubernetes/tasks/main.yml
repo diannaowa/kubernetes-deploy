@@ -8,4 +8,4 @@
 - include_tasks: kubernetes-master.yml
   when: "'masters' in group_names"
 
-- inlcude_tasks: kubernetes-node.yml
+- include_tasks: kubernetes-node.yml
