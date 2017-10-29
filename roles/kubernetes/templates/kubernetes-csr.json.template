@@ -1,0 +1,28 @@
+{
+  "CN": "kubernetes",
+  "hosts": [
+    "127.0.0.1",
+    {% for host in groups["masters"] %}"{{ host }}",
+
+    {% endfor %}
+    "10.254.0.1",
+    "kubernetes",
+    "kubernetes.default",
+    "kubernetes.default.svc",
+    "kubernetes.default.svc.cluster",
+    "kubernetes.default.svc.cluster.local"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "Xian",
+      "L": "Xian",
+      "O": "k8s",
+      "OU": "System"
+    }
+  ]
+}

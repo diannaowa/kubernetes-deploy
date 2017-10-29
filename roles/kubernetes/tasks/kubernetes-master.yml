@@ -1,0 +1,29 @@
+---
+
+- name: "Upload kubernetes csrfiles"
+  template:
+    src: kubernetes-csr.json.template
+    dest: /opt/ssl/kubernetes-csr.json
+  when: "inventory_hostname == groups['masters'][0]"
+
+- name: "Create kubernetes master CA"
+  shell: "cfssl gencert -ca=/etc/kubernetes/ssl/ca.pem \
+  -ca-key=/etc/kubernetes/ssl/ca-key.pem \
+  -config=/opt/ssl/config.json \
+  -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes"
+  args:
+    chdir: /opt/ssl/
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "inventory_hostname == groups['masters'][0]"
+
+
+- name: "Upload kubernetes pem file"
+  synchronize: src=/opt/ssl/{{ item }} dest=/etc/kubernetes/ssl/
+  with_items:
+    - kubernetes-key.pem
+    - kubernetes.pem
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "'masters' in group_names"
+
+- name: "Create bootstrap token.csv"
+  shell: "echo \"`head -c 16 /dev/urandom | od -An -t x | tr -d ' '`,kubelet-bootstrap,10001,\\"system:kubelet-bootstrap\\"\" > /opt/ssl/token.csv"
