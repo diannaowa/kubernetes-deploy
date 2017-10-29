@@ -5,5 +5,5 @@
 - include_tasks: kubectl-kubeconfig.yml
   when: "'masters' in group_names"
 
-- include_tasks: kubectl-master.yml
+- include_tasks: kubernetes-master.yml
   when: "'masters' in group_names"
