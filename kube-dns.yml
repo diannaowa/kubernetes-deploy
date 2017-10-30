@@ -1,0 +1,6 @@
+
+- name: Create kube-dns
+  hosts: masters
+  gather_facts: no
+  roles:
+    - kube-dns

@@ -1,0 +1,15 @@
+---
+
+- name: "Make sure kube-dns tmp dir"
+  file: path=/tmp/kube-dns state=directory
+  when: "inventory_hostname == groups['masters'][0]"
+
+- name: "Upload kube-dns yml file"
+  template: src=kube-dns.yml.template dest=/tmp/kube-dns/kube-dns.yml
+  when: "inventory_hostname == groups['masters'][0]"
+
+
+- name: "Create kube-dns"
+  shell: "kubectl apply -f /tmp/kube-dns/kube-dns.yml"
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "inventory_hostname == groups['masters'][0]"

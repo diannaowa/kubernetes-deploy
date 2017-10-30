@@ -33,12 +33,12 @@
 - name: "Create calico"
   shell: "kubectl apply -f /tmp/calico/calico.yml"
   delegate_to: "{{ groups['masters'][0] }}"
-  when: "inventory_hostname == groups['etcd'][0]"
+  when: "inventory_hostname == groups['masters'][0]"
 
 - name: "Create calico rbac"
   shell: "kubectl apply -f /tmp/calico/rbac.yml"
   delegate_to: "{{ groups['masters'][0] }}"
-  when: "inventory_hostname == groups['etcd'][0]"
+  when: "inventory_hostname == groups['masters'][0]"
 
 - name: "Download calicoctl"
   shell: "wget {{ CALICOCTL }} -O /usr/bin/calicoctl"
