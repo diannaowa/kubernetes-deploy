@@ -1,0 +1,6 @@
+
+- include: ca.yml
+- include: etcd.yml
+- include: kubernetes.yml
+- include: calico.yml
+- include: kube-dns.yml
