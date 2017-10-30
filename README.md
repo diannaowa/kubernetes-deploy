@@ -47,3 +47,7 @@ kubernetes 1.8+
 	172.31.19.38
 	172.31.19.37
 	172.31.19.39
+	
+**执行命令，一键部署**
+
+	ansible-playbook -i environments/test/inventory deploy.yml
