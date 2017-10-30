@@ -8,7 +8,7 @@ kubernetes 1.8+
 
 **注意**
 
-只在ubuntu16.04 64位上测试通过，其他平台未测试。
+只在`ubuntu16.04 64bit` 上测试通过，其他平台未测试。
 
 
 **变量文件：environments/test/group_vars/all**
