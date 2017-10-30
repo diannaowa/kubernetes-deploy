@@ -11,8 +11,7 @@ stream {
     upstream kube_apiserver {
         least_conn;
         {% for host in groups["masters"] %}server {{ host }}:6443;
-
-    {% endfor %}
+        {% endfor %}
 
     }
 

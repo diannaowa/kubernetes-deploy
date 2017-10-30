@@ -24,6 +24,11 @@
   delegate_to: "{{ groups['masters'][0] }}"
   when: "'nodes' in group_names"
 
+- name: "Bind kubelet-bootstrap on system:node-bootstrapper"
+  shell: "kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap"
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "inventory_hostname == groups['masters'][0]"
+
 
 - name: "Create kubelet kubeconfig file step 1"
   shell: "kubectl config set-cluster kubernetes \
@@ -137,6 +142,13 @@
   template:
     src: kube-proxy.service.template
     dest: /etc/systemd/system/kube-proxy.service
+  when: "'nodes' in group_names"
+
+- name: "Create kube-proxy/kubelet work dir"
+  file: path={{ item }} state=directory
+  with_items:
+    - /var/lib/kube-proxy
+    - /var/lib/kubelet
   when: "'nodes' in group_names"
 
 - name: "Start kubelet service"
