@@ -1,5 +1,7 @@
 # kubernetes-deploy
 
+在连网环境下，一键部署多master节点Kubernetes集群
+
 **环境依赖**
 
 Ansible 2.2+
