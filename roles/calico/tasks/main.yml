@@ -2,21 +2,28 @@
 
 - name: "Get etcd key base64 code"
   shell: "cat /etc/kubernetes/ssl/etcd-key.pem | base64 | tr -d '\n'"
-  register: "etcd_key_base64"
+  register: "etcd_key_base64_full"
   delegate_to: "{{ groups['masters'][0] }}"
-  when: "inventory_hostname == groups['masters'][0]"
+  when: "inventory_hostname == groups['etcd'][0]"
 
 - name: "Get etcd cert base64 code"
   shell: "cat /etc/kubernetes/ssl/etcd.pem | base64 | tr -d '\n'"
-  register: "etcd_cert_base64"
+  register: "etcd_cert_base64_full"
   delegate_to: "{{ groups['masters'][0] }}"
-  when: "inventory_hostname == groups['masters'][0]"
+  when: "inventory_hostname == groups['etcd'][0]"
 
 - name: "Get etcd ca base64 code"
   shell: "cat /etc/kubernetes/ssl/ca.pem | base64 | tr -d '\n'"
-  register: "etcd_ca_base64"
+  register: "etcd_ca_base64_full"
   delegate_to: "{{ groups['masters'][0] }}"
-  when: "inventory_hostname == groups['masters'][0]"
+  when: "inventory_hostname == groups['etcd'][0]"
+
+- name: "Registe vars etcd_key_base64"
+  vars:
+    etcd_key_base64: {{ etcd_key_base64_full.stdout }}
+    etcd_cert_base64: {{ etcd_cert_base64_full.stdout }}
+    etcd_ca_base64: {{ etcd_ca_base64_full.stdout }}
+
 
 - name: "Make sure calico tmp dir"
   file: path=/tmp/calico state=directory

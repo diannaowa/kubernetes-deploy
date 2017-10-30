@@ -3,6 +3,7 @@
   hosts:
     - masters
     - nodes
+    - etcd
   gather_facts: no
   roles:
     - calico
