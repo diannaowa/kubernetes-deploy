@@ -1,6 +1,7 @@
 ETCD_URL: https://github.com/coreos/etcd/releases/download/v3.2.9/etcd-v3.2.9-linux-amd64.tar.gz
 KUBERNETES_CLIENT_URL: https://dl.k8s.io/v1.8.2/kubernetes-client-linux-amd64.tar.gz
 KUBERNETES_SERVER_URL: https://dl.k8s.io/v1.8.2/kubernetes-server-linux-amd64.tar.gz
+CALICOCTL: https://github.com/projectcalico/calicoctl/releases/download/v1.6.1/calicoctl
 TOKEN: b5aa35577173f8a527c2fd08439ac0cc
 PROXY_PORT: 7443
 CLUSTER_CIDR: 10.233.0.0/16

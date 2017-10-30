@@ -29,3 +29,29 @@
 - name: "Upload calico rbac yml file"
   template: src=rbac.yml.template dest=/tmp/calico/rbac.yml
   when: "inventory_hostname == groups['masters'][0]"
+
+- name: "Create calico"
+  shell: "kubectl apply -f /tmp/calico/calico.yml"
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "inventory_hostname == groups['etcd'][0]"
+
+- name: "Create calico rbac"
+  shell: "kubectl apply -f /tmp/calico/rbac.yml"
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: "inventory_hostname == groups['etcd'][0]"
+
+- name: "Download calicoctl"
+  shell: "wget {{ CALICOCTL }} -O /usr/bin/calicoctl"
+  when: "'nodes' in group_names"
+
+- name: "Add x on /usr/bin/calicoctl"
+  file: dest=/usr/bin/calicoctl mode=a+x
+  when: "'nodes' in group_names"
+
+- name: "Create calicoctl config dir"
+  file: path=/etc/calico state=directory
+  when: "'nodes' in group_names"
+
+- name: "Upload calicoctl config file"
+  template: src=calicoctl.cfg.template dest=/etc/calico/calicoctl.cfg
+  when: "'nodes' in group_names"
