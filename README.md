@@ -8,6 +8,8 @@ Ansible 2.2+
 
 kubernetes 1.8+
 
+请提前配置好各主机之间基于SSH Key认证的登陆，在各个主机节点上安装好Docker服务
+
 **注意**
 
 只在`ubuntu16.04 64bit` 上测试通过，其他平台未测试。
