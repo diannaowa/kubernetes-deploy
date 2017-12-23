@@ -22,7 +22,7 @@ ExecStart=/usr/bin/etcd \
   --listen-client-urls=https://{{ inventory_hostname }}:2379,http://127.0.0.1:2379 \
   --advertise-client-urls=https://{{ inventory_hostname }}:2379 \
   --initial-cluster-token=k8s-etcd-cluster \
-  --initial-cluster={% for host in groups["etcd"] %}etcd{{ groups.etcd.index(host)+1 }}=http://{{ host }}:2380{% if loop.index != groups['etcd']|length %},{%endif%}{% endfor %} \
+  --initial-cluster={% for host in groups["etcd"] %}etcd{{ groups.etcd.index(host)+1 }}=https://{{ host }}:2380{% if loop.index != groups['etcd']|length %},{%endif%}{% endfor %} \
   --initial-cluster-state=new \
   --data-dir=/var/lib/etcd
 Restart=on-failure
