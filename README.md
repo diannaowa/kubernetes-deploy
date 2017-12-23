@@ -53,3 +53,18 @@ kubernetes 1.8+
 **执行命令，一键部署**
 
 	ansible-playbook -i environments/test/inventory deploy.yml
+	
+	[root@node01 ~]# kubectl get csr
+	NAME                                                   AGE       REQUESTOR           CONDITION
+	node-csr-4F4B43HbwaW8PyJi2BenjTWsAAdLixBplbnTW0Pp1Fc   6m        kubelet-bootstrap   Approved,Issued
+	node-csr-9Sz0QlIB06RLlSYIUkoTZFhemTExARe2rkz7OoyDbr0   6m        kubelet-bootstrap   Pending
+	node-csr-DsmorB5UHAArgI5AjWGDTBumVFr9Ly5xnd_-246Pp80   6m        kubelet-bootstrap   Pending
+	node-csr-GfuEVUCvZXhd8k57Z2_q23LKBO6hChBZ5f-5ofLOS6k   6m        kubelet-bootstrap   Pending
+	node-csr-NSr7RpeyGHxrtcXvvHVK_BCDU2cxGqsJPRa5uoHcRMw   6m        kubelet-bootstrap   Pending
+	node-csr-Od4bsfvxBAjYWBZfGs5rTuNjlyWdEFNyNnK_6MpJ16c   6m        kubelet-bootstrap   Pending
+	node-csr-g_LXQ2uItjRCKv28s8GKt-GDvsLrUprGLqSJtRnlBN4   6m        kubelet-bootstrap   Pending
+	node-csr-gjayOP2i93p-gjGhuEN2y3YTOrZurSRTVk1KnT-anxs   6m        kubelet-bootstrap   Pending
+	node-csr-klUtaurnG1rush4n91QMbao1d7q-lLjZH6M5q_zYC08   6m        kubelet-bootstrap   Pending
+	node-csr-lKX74hZ9nwZuuNB75XW7U5OY1lmhun6P2svX22bypqE   6m        kubelet-bootstrap   Pending
+	
+	[root@node01 ~]# kubectl certificate approve NAME
