@@ -2,7 +2,7 @@
 
 #The IP address or hostname to access admin UI and registry service.
 #DO NOT use localhost or 127.0.0.1, because Harbor needs to be accessed by external clients.
-hostname = go-harbor
+hostname = {{HARBOR_DOMAIN}}
 
 #The protocol for accessing the UI and token/notification service, by default it is http.
 #It can be set to https if ssl is enabled on nginx.
@@ -25,7 +25,7 @@ ssl_cert = /etc/harbor/harbor.pem
 ssl_cert_key = /etc/harbor/harbor-key.pem
 
 #The path of secretkey storage
-secretkey_path = /data
+secretkey_path = {{ HARBOR_DATA }}
 
 #Admiral's url, comment this attribute, or set its value to NA when Harbor is standalone
 admiral_url = NA
