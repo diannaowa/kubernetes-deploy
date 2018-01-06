@@ -1,0 +1,50 @@
+
+
+- name: "Make sure barbor tmp dir"
+  file: path=/tmp/harbor_bin state=directory
+
+- name: "Create harbor ca dir"
+  file: path=/etc/harbor state=directory
+
+- name: "Download harbor"
+  unarchive:
+    src: "{{ HARBOR }}"
+    dest: /tmp/harbor_bin
+    copy: yes
+    keep_newer: yes
+
+- name: "Load harbor images"
+  shell: "docker load -i /tmp/harbor_bin/harbor/harbor.v1.3.0.tar.gz"
+
+- name: Download cfssl bin
+  get_url:
+    url: https://pkg.cfssl.org/R1.2/{{ item }}_linux-amd64
+    dest: /usr/bin/{{ item }}
+    mode: 0755
+  with_items:
+    - cfssl
+    - cfssljson
+    - cfssl-certinfo
+
+
+- name: "Upload harbor csr"
+  template: src=harbor-csr.json.template dest=/etc/harbor/harbor-csr.json
+
+
+- name: "Upload harbor config file"
+  template: src=harbor.cfg.template dest=/tmp/harbor_bin/harbor/harbor.cfg
+
+
+- name: "Generate harbor ca"
+  shell: "cfssl gencert \
+          -ca=/etc/kubernetes/ssl/ca.pem \
+          -ca-key=/etc/kubernetes/ssl/ca-key.pem \
+          -config=/etc/harbor/ca-config.json \
+          -profile=kubernetes harbor-csr.json | cfssljson -bare harbor"
+
+- name: "Install docker-compose"
+  shell: "curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose \
+          && chmod +x /usr/local/bin/docker-compose"
+
+- name: "Install harbor"
+  shell: "/tmp/harbor_bin/harbor/install.sh  --with-clair"

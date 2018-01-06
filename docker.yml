@@ -1,0 +1,6 @@
+
+- name: Install docker
+  hosts: all
+  gather_facts: yes
+  roles:
+    - docker

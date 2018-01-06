@@ -1,0 +1,27 @@
+
+
+- name: "Make sure docker tmp dir"
+  file: path=/tmp/docker_bin state=directory
+
+- name: "Down load dokcer bin files"
+  shell: "wget -qO- {{ DOCKER }}| tar xvz -C /tmp/docker_bin"
+
+- name: "Install docker"
+  copy: src=/tmp/docker_bin/docker/{{item}} dest={{ bin_dir }}/{{ item }} mode=0755
+  with_items:
+  - docker-containerd
+  - docker-containerd-shim
+  - docker-init
+  - docker-runc
+  - docker
+  - docker-containerd-ctr
+  - dockerd
+  - docker-proxy
+
+
+- name: "Install docker service"
+  template: src=docker.service.template dest=/etc/systemd/system/docker.service
+
+
+- name: "Start docker service"
+  shell: systemctl daemon-reload && systemctl enable docker && systemctl restart docker

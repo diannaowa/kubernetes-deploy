@@ -1,0 +1,6 @@
+
+- name: Install harbor
+  hosts: harbor
+  gather_facts: yes
+  roles:
+    - harbor

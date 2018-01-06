@@ -3,6 +3,8 @@
 172.31.19.37
 172.31.19.39
 
+[harbor]
+
 [kubernetes:children]
 masters
 nodes
