@@ -1,0 +1,9 @@
+- name: "Make sure gocd data dir"
+  file: path="{{ GOCD_DATA }}" state=directory
+
+
+- name: "Install GoCD service"
+  template: src=gocd.service.template dest=/etc/systemd/system/gocd.service
+
+- name: "Start GoCD service"
+  shell: systemctl daemon-reload && systemctl enable gocd && systemctl restart gocd

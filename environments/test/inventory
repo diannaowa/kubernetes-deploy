@@ -5,6 +5,8 @@
 
 [harbor]
 
+[ci]
+
 [kubernetes:children]
 masters
 nodes

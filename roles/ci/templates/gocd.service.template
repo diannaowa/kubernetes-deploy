@@ -1,0 +1,21 @@
+[Unit]
+Description=GoCD Server
+
+
+[Service]
+User=root
+PermissionsStartOnly=true
+ExecStart=/usr/bin/docker run -p 8153:8153 \
+                              -p 8154:8154 \
+                              -v {{ CI_DATA }}:/godata \
+                              --name gocd-server \
+                              --restart=on-failure:5 \
+                              {{ CI_IMAGE }}
+ExecStartPre=-/usr/bin/docker rm -f gocd-server
+ExecStop=/usr/bin/docker stop gocd-server
+Restart=always
+RestartSec=15s
+TimeoutStartSec=30s
+
+[Install]
+WantedBy=multi-user.target

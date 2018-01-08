@@ -11,3 +11,8 @@ INSECURE_REGISTRY: ["go-harbor"]
 HARBOR: http://harbor.orientsoft.cn/harbor-v1.3.0/harbor-offline-installer-v1.3.0.tgz
 HARBOR_DOMAIN: go-harbor
 HARBOR_DATA: /data/harbor
+
+####CI/CD######
+CI_TYPE: gocd
+CI_IMAGE: gocd/gocd-server:v17.12.0
+CI_DATA: /godata

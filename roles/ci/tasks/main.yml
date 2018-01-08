@@ -1,0 +1,2 @@
+- include_tasks: gocd.yml
+  when: "CI_TYPE=='gocd'"
