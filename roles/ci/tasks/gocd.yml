@@ -1,5 +1,5 @@
 - name: "Make sure gocd data dir"
-  file: path="{{ GOCD_DATA }}" state=directory
+  file: path="{{ CI_DATA }}" state=directory
 
 
 - name: "Install GoCD service"
