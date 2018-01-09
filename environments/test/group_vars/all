@@ -15,4 +15,5 @@ HARBOR_DATA: /data/harbor
 ####CI/CD######
 CI_TYPE: gocd
 CI_IMAGE: gocd/gocd-server:v17.12.0
+CI_AGENT_IAMGE: gocd/gocd-agent-alpine-3.5:v17.12.0
 CI_DATA: /godata
