@@ -24,6 +24,14 @@
     - csr.json
   when: "inventory_hostname == groups['masters'][0]"
 
+- name: "Upload config/csr files for harbor"
+  copy:
+    src: "{{ item }}"
+    dest: /etc/harbor/ca-config.json
+  with_items:
+    - config.json
+  when: "'harbor' in group_names"
+
 - name: "Create CA"
   shell: "cfssl gencert -initca csr.json | cfssljson -bare ca"
   args:

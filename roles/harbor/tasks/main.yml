@@ -34,7 +34,7 @@
 
 
 - name: "Generate harbor ca"
-  shell: "cfssl gencert \
+  shell: "cd /etc/harbor && cfssl gencert \
           -ca=/etc/kubernetes/ssl/ca.pem \
           -ca-key=/etc/kubernetes/ssl/ca-key.pem \
           -config=/etc/harbor/ca-config.json \

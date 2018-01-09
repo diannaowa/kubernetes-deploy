@@ -10,7 +10,7 @@ CLUSTER_CIDR: 10.233.0.0/16
 INSECURE_REGISTRY: ["go-harbor"]
 HARBOR: http://harbor.orientsoft.cn/harbor-v1.3.0/harbor-offline-installer-v1.3.0.tgz
 HARBOR_DOMAIN: go-harbor
-HARBOR_DATA: /data/harbor
+HARBOR_DATA: /data
 
 ####CI/CD######
 CI_TYPE: gocd
