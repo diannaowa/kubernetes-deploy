@@ -1,6 +1,6 @@
 # kubernetes-deploy
 
-在连网环境下，一键部署多master节点Kubernetes集群
+在连网环境下，一键部署多master节点的Kubernetes集群
 
 **环境依赖**
 
@@ -29,31 +29,39 @@ kubernetes 1.8+
 **文件 environments/test/inventory**
 
 	[etcd]
-	#etcd主机列表,奇数个，至少3个
+	#etcd主机列表,奇数个；如果只指定了一个主机，则部署为单点etcd server
 	172.31.19.38
 	172.31.19.37
 	172.31.19.39
-	
+
 	[kubernetes:children]
 	masters
 	nodes
-	
+
+	[ci]
+	#指定一个主机部署ci系统（Jenkins或GoCD）
+	xx.xx.xx.xx
+
+	[harbor]
+	#指定一台主机部署harbor作为集群中的docker registry
+	xx.xx.xx.xx
+
 	[masters]
 	＃k8s master主机列表
 	172.31.19.38
 	172.31.19.37
 	172.31.19.39
-	
+
 	[nodes]
 	＃k8s node列表
 	172.31.19.38
 	172.31.19.37
 	172.31.19.39
-	
+
 **执行命令，一键部署**
 
 	ansible-playbook -i environments/test/inventory deploy.yml
-	
+
 	[root@node01 ~]# kubectl get csr
 	NAME                                                   AGE       REQUESTOR           CONDITION
 	node-csr-4F4B43HbwaW8PyJi2BenjTWsAAdLixBplbnTW0Pp1Fc   6m        kubelet-bootstrap   Approved,Issued
@@ -66,5 +74,5 @@ kubernetes 1.8+
 	node-csr-gjayOP2i93p-gjGhuEN2y3YTOrZurSRTVk1KnT-anxs   6m        kubelet-bootstrap   Pending
 	node-csr-klUtaurnG1rush4n91QMbao1d7q-lLjZH6M5q_zYC08   6m        kubelet-bootstrap   Pending
 	node-csr-lKX74hZ9nwZuuNB75XW7U5OY1lmhun6P2svX22bypqE   6m        kubelet-bootstrap   Pending
-	
+
 	[root@node01 ~]# kubectl certificate approve NAME
