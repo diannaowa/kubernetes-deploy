@@ -7,7 +7,7 @@
   shell: "wget -qO- {{ DOCKER }}| tar xvz -C /tmp/docker_bin"
 
 - name: "Install docker"
-  copy: src=/tmp/docker_bin/docker/{{item}} dest={{ bin_dir }}/{{ item }} mode=0755
+  copy: src="/tmp/docker_bin/docker/{{item}}" dest=/usr/bin/{{ item }}" mode=0755
   with_items:
   - docker-containerd
   - docker-containerd-shim

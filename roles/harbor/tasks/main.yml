@@ -6,12 +6,10 @@
 - name: "Create harbor ca dir"
   file: path=/etc/harbor state=directory
 
+
+
 - name: "Download harbor"
-  unarchive:
-    src: "{{ HARBOR }}"
-    dest: /tmp/harbor_bin
-    copy: yes
-    keep_newer: yes
+  shell: wget -qO- {{ HARBOR }}| tar xvz -C /tmp/harbor_bin
 
 - name: "Load harbor images"
   shell: "docker load -i /tmp/harbor_bin/harbor/harbor.v1.3.0.tar.gz"

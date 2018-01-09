@@ -29,23 +29,28 @@
 
 - name: "Make sure /var/lib/etcd"
   file: path=/var/lib/etcd state=directory
+  when: "'etcd' in group_names"
 
 - name: "Make sure  etcd tmp dir"
   file: path=/tmp/etcd-k8s state=directory
+  when: "'etcd' in group_names"
 
 - name: "Download etcd bin file"
   shell: "wget -qO- {{ ETCD_URL }}| tar xvz -C /tmp/etcd-k8s"
+  when: "'etcd' in group_names"
 
 - name: "Install etcd bin"
   shell: "find /tmp/etcd-k8s -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \\;"
   with_items:
     - etcd
     - etcdctl
+  when: "'etcd' in group_names"
 
 - name: "Install etcd service"
   template:
     src: etcd.service.template
     dest: /etc/systemd/system/etcd.service
+  when: "'etcd' in group_names"
 
 - name: "Start etcd service"
   systemd:
@@ -53,3 +58,4 @@
     daemon_reload: yes
     name: etcd
     enabled: yes
+  when: "'etcd' in group_names"
