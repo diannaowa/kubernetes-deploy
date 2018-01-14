@@ -101,7 +101,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: quay.io/calico/node:v2.6.2
+          image: workshop.hlp.fun:5000/calico/node:v2.6.2
           env:
             # The location of the Calico etcd cluster.
             - name: ETCD_ENDPOINTS
@@ -190,7 +190,7 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: quay.io/calico/cni:v1.11.0
+          image: workshop.hlp.fun:5000/calico/cni:v1.11.0
           command: ["/install-cni.sh"]
           env:
             # The location of the Calico etcd cluster.
@@ -266,7 +266,7 @@ spec:
       serviceAccountName: calico-kube-controllers
       containers:
         - name: calico-kube-controllers
-          image: quay.io/calico/kube-controllers:v1.0.0
+          image: workshop.hlp.fun:5000/calico/kube-controllers:v1.0.0
           env:
             # The location of the Calico etcd cluster.
             - name: ETCD_ENDPOINTS
@@ -329,7 +329,7 @@ spec:
       serviceAccountName: calico-kube-controllers
       containers:
         - name: calico-policy-controller
-          image: quay.io/calico/kube-controllers:v1.0.0
+          image: workshop.hlp.fun:5000/calico/kube-controllers:v1.0.0
           env:
             # The location of the Calico etcd cluster.
             - name: ETCD_ENDPOINTS
