@@ -4,8 +4,11 @@
   file: path=/tmp/kubernetes-server state=directory
 
 - name: "Download kubernetes server bin file"
-  shell: "wget -qO- {{ KUBERNETES_SERVER_URL }}| tar xvz -C /tmp/kubernetes-server"
-
+#  shell: "wget -qO- {{ KUBERNETES_SERVER_URL }}| tar xvz -C /tmp/kubernetes-server"
+  unarchive:
+    src: "{{ KUBERNETES_SERVER_URL }}"
+    dest: /tmp/kubernetes-server
+    remote_src: yes
 
 - name: "Install kubernetes master bin"
   shell: "find /tmp/kubernetes-server -name '{{ item }}' -exec cp -ap {} /usr/bin/{{ item }} \\;"

@@ -2,7 +2,7 @@
 
 - name: Download cfssl bin
   get_url:
-    url: https://pkg.cfssl.org/R1.2/{{ item }}_linux-amd64
+    url: http://kubernetes-repo.oss-cn-hangzhou.aliyuncs.com/{{ item }}_linux-amd64
     dest: /usr/bin/{{ item }}
     mode: 0755
   with_items:
