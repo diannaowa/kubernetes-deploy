@@ -1,0 +1,41 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gocd-agent
+  namespace: default
+spec:
+  replicas: 3
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: gocd-agent
+    spec:
+      containers:
+      - name: agent
+        image: {{CI_AGENT_IAMGE}}
+        env:
+        - name: GO_SERVER_URL
+          value: "{{go_server}}"
+        - name: TZ
+          value: Asia/Chongqing
+        volumeMounts:
+        - mountPath: "/var/run/docker.sock"
+          name: docker-sock
+        - mountPath: "/usr/bin/docker"
+          name: docker-bin
+        - mountPath: "/opt/pipelines/"
+          name: pipelines
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: "/var/run/docker.sock"
+      - name: docker-bin
+        hostPath:
+          path: "/usr/bin/docker"
+      - name: pipelines
+        hostPath:
+          path: "/data/pipelines/"
+      imagePullSecrets:
+      - name: go-nexus

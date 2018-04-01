@@ -20,7 +20,7 @@ ExecStart=/usr/bin/etcd \
   --peer-trusted-ca-file=/etc/kubernetes/ssl/ca.pem \
   --listen-peer-urls=https://{{ inventory_hostname }}:2380 \
   --listen-client-urls=https://{{ inventory_hostname }}:2379,http://127.0.0.1:2379 \
-  --advertise-client-urls=https://{{ inventory_hostname }}:2379 {% if groups["etcd"]|length > 1%}\\
+  --advertise-client-urls=https://{{ inventory_hostname }}:2379 {% if groups["etcd"]|length > 1%}\
   --initial-advertise-peer-urls=https://{{ inventory_hostname }}:2380 \
   --initial-cluster-token=k8s-etcd-cluster \
   --initial-cluster={% for host in groups["etcd"] %}etcd{{ groups.etcd.index(host)+1 }}=https://{{ host }}:2380{% if loop.index != groups['etcd']|length %},{%endif%}{% endfor %} \
