@@ -20,7 +20,6 @@ ExecStart=/usr/bin/kubelet \
   --serialize-image-pulls=false \
   --logtostderr=true \
   --max-pods=512 \
-  --network-plugin=cni \
   --v=2
 Restart=on-failure
 RestartSec=5
