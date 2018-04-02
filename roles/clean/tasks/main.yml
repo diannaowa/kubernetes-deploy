@@ -1,0 +1,9 @@
+---
+
+- name: "Stop k8s master"
+  shell: "systemctl stop kube-apiserver && systemctl stop kube-controller-manager && systemctl stop kube-scheduler"
+  when: "'masters' in group_names"
+
+- name: "Stop k8s node"
+  shell: "systemctl stop kubelet && systemctl stop kube-proxy"
+  when: "'node' in group_names"

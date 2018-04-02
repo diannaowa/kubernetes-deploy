@@ -1,0 +1,8 @@
+
+- name: Stop kubernetes Cluster
+  hosts:
+    - masters
+    - nodes
+  gather_facts: no
+  roles:
+    - clean
