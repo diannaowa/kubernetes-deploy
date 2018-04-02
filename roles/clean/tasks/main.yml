@@ -6,4 +6,4 @@
 
 - name: "Stop k8s node"
   shell: "systemctl stop kubelet && systemctl stop kube-proxy"
-  when: "'node' in group_names"
+  when: "'nodes' in group_names"
