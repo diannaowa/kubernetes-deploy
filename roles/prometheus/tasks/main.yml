@@ -1,0 +1,26 @@
+---
+
+- name: "Create prometheus tmp dir"
+  file: path=/tmp/prometheus state=directory
+  when: "inventory_hostname == groups['masters'][0]"
+
+- name: "Upload resource files"
+  copy: src={{ item }} dest=/tmp/prometheus/{{ item }}
+  with_items:
+    - grafana-deployment-svc.yml
+    - prometheus-configmap.yml
+    - prometheus-deployment.yml
+    - prometheus-svc.yml
+    - rbac.yml
+  when: "inventory_hostname == groups['masters'][0]"
+
+
+- name: "Create resources"
+  shell: "kubectl apply -f /tmp/prometheus/{{ item }}"
+  with_items:
+    - rbac.yml
+    - prometheus-configmap.yml
+    - grafana-deployment-svc.yml
+    - prometheus-deployment.yml
+    - prometheus-svc.yml
+  when: "inventory_hostname == groups['masters'][0]"

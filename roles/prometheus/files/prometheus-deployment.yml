@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-server
+  namespace: monitoring
+  labels:
+    app: prometheus-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-server
+  template:
+    metadata:
+      name: prometheus-server
+      labels:
+        app: prometheus-server
+
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - name: prometheus-server
+        image: prom/prometheus:v2.2.1
+        args:
+          - '--storage.tsdb.retention=24h'
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--query.max-concurrency=40'
+          - '--query.timeout=30s'
+          #- '--storage.tsdb.path=nodes'
+        ports:
+        - name: webui
+          containerPort: 9090
+        # resources:
+        #   requests:
+        #     #cpu: 500m
+        #     memory: 3G
+        #   limits:
+        #     #cpu: 500m
+        #     memory: 3G
+        env:
+        - name: TZ
+          value: Asia/Chongqing
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prometheus
+        # - name: data-dir
+        #   mountPath: /prometheus
+
+        # - name: record-rules
+        #   mountPath: /etc/prom-record
+      volumes:
+      - name: config-volume
+        configMap:
+          name: prometheus-configmap
+
+      # - name: record-rules
+      #   configMap:
+      #     name: record-rules

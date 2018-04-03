@@ -32,6 +32,7 @@ ExecStart=/usr/bin/kube-apiserver \
   --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-key.pem \
   --enable-bootstrap-token-auth \
   --token-auth-file=/etc/kubernetes/token.csv \
+  --endpoint-reconciler-type=lease \
   --v=2
 Restart=on-failure
 RestartSec=5

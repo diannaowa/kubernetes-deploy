@@ -1,0 +1,6 @@
+
+- name: Deploy prometheus
+  hosts: masters
+  gather_facts: no
+  roles:
+    - prometheus
