@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-server
+  namespace: monitoring
+  labels:
+    app: alertmanager-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager-server
+  template:
+    metadata:
+      name: alertmanager-server
+      labels:
+        app: alertmanager-server
+
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - name: alertmanager-server
+        image: prom/alertmanager:v0.14.0
+        args:
+          - '--config.file=/etc/alertmanager/alertmanager.yml'
+
+        ports:
+        - name: webui
+          containerPort: 9093
+        # resources:
+        #   requests:
+        #     #cpu: 500m
+        #     memory: 3G
+        #   limits:
+        #     #cpu: 500m
+        #     memory: 3G
+        env:
+        - name: TZ
+          value: Asia/Chongqing
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/alertmanager
+
+      volumes:
+      - name: config-volume
+        configMap:
+          name: alertmanager-configmap
+
+      # - name: record-rules
+      #   configMap:
+      #     name: record-rules
