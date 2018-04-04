@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  alert-rules.yml: |
+    ALERT InstanceDown
+      IF up=0
+      FOR 10s
+      WITH {}
+      ANNOTATIONS {
+        summary = "InstanceDown",
+        description = "{{$labels.intance}} is down."
+      }
+
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: alertrules-configmap
+  namespace: monitoring
