@@ -1,6 +1,6 @@
 
 
-- name: "Make sure barbor tmp dir"
+- name: "Make sure harbor tmp dir"
   file: path=/tmp/harbor_bin state=directory
 
 - name: "Create harbor ca dir"
