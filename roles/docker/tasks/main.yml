@@ -3,11 +3,17 @@
 - name: "Make sure docker tmp dir"
   file: path=/tmp/docker_bin state=directory
 
-- name: "Down load dokcer bin files"
-  shell: "wget -qO- {{ DOCKER }}| tar xvz -C /tmp/docker_bin"
+# - name: "Down load dokcer bin files"
+#   shell: "wget -qO- {{ DOCKER }}| tar xvz -C /tmp/docker_bin"
+- name: Unarchive docker binary to /opt
+  unarchive:
+    src: "{{ DOCKER }}"
+    dest: /tmp/docker_bin/
+    mode: 0755
+    remote_src: True
 
 - name: "Install docker"
-  copy: src="/tmp/docker_bin/docker/{{item}}" dest="/usr/bin/{{ item }}" mode=0755
+  shell: "cp -ap /tmp/docker_bin/docker/{{item}} /usr/bin/{{ item }}"
   with_items:
   - docker-containerd
   - docker-containerd-shim

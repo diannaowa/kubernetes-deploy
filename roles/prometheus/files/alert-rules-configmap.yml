@@ -1,14 +1,40 @@
 apiVersion: v1
 data:
   alert-rules.yml: |
-    ALERT InstanceDown
-      IF up=0
-      FOR 10s
-      WITH {}
-      ANNOTATIONS {
-        summary = "InstanceDown",
-        description = "{{$labels.intance}} is down."
-      }
+    groups:
+    - name: example.rules
+      rules:
+      # Alert for any instance that is unreachable for >5 minutes.
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10m."
+
+        - alert: NginxContainerMemoryUsage
+          expr: container_memory_usage_bytes{namespace="default",pod_name=~"nginx-deployment.+",image!~"k8s.gcr.io/pause-amd64.+"}/1024/1024
+          - container_memory_cache{namespace="default",pod_name=~"nginx-deployment.+",image!~"k8s.gcr.io/pause-amd64.+"}/1024/1024
+          >4
+          for: 10s
+          labels:
+            severity: warning
+            pod_name: {{ $labels.pod_name }}
+          annotations:
+            summary: "Nginx ontainer used many memory, more than {{ $value }}M"
+            description: "Nginx ontainer used many memory, more than {{ $value }}M,instance:{{ $lables.instance }}"
+
+        - alert: PrometheusNotIngestingSamples
+          expr: rate(prometheus_tsdb_head_samples_appended_total{kubernetes_namespace="monitoring"}[1m]) <= 0
+          for: 10m
+          labels:
+            serverity: critical
+            instance: {{ $labels.instance }}
+          annotations:
+             description: "Prometheus {{ $labels.kubernetes_namespace }}/{{ $labels.kubernetes_name}} isn't ingesting samples."
+             summary: "Prometheus isn't ingesting samples"
 
 kind: ConfigMap
 metadata:

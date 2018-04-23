@@ -3,22 +3,22 @@ data:
   alertmanager.yml: |
     global:
     route:
-    receiver: 'email'
-    group_by: ['alertname']
-    group_wait: 30s
-    group_interval: 5m
-    repeat_interval: 1h
-    # routes:
-    # - receiver: 'auto-hpa'
-    #   group_wait: 1s
-    #   group_interval: 1s
-    #   repeat_interval: 1s
-    #   match:
-    #     trigger: hpa
+      receiver: 'email'
+      group_by: ['alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 1h
+      # routes:
+      # - receiver: 'auto-hpa'
+      #   group_wait: 1s
+      #   group_interval: 1s
+      #   repeat_interval: 1s
+      #   match:
+      #     trigger: hpa
     receivers:
     - name: 'email'
     email_configs:
-    - to: xxx@thoughtworks.com
+    - to: xxx@gmail.com
       from: xxxxx@gmail.com
       smarthost: smtp.gmail.com:587
       auth_username: "xxxxx"

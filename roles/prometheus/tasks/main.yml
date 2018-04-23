@@ -17,6 +17,7 @@
 - name: "Create namespace"
   shell: "kubectl create namespace monitoring"
   when: "inventory_hostname == groups['masters'][0]"
+  
 
 - name: "Create resources"
   shell: "kubectl apply -f /tmp/prometheus/{{ item }}"
